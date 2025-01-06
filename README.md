@@ -1,2 +1,2 @@
 # scenes_and_songs
-Hacathon 2025!
+Hackathon 2025!
