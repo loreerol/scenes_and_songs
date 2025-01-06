@@ -5,12 +5,15 @@
   "main": "index.js",
   "repository": "git@github.com:loreerol/scenes_and_songs.git",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "build": "cd ../client && npm install && npm run build"
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "redis": "^4.7.0"
   },
   "engines": {
     "node": "18.13.0"
