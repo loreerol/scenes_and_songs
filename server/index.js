@@ -1,9 +1,12 @@
-import express from "express";
 import path from "node:path";
-import cors from "cors";
-import * as crypto from "node:crypto";
-
 import { fileURLToPath } from "node:url";
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import { createClient } from "redis";
+
+import gameEndpoints from "./game.js";
+import playerEndpoints from "./player.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,48 +14,51 @@ const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 3001;
 
 const app = express();
+app.use(express.static(path.resolve(__dirname, "../client/build")));
+app.use(cors());
 
-import { createClient } from "redis";
+var jsonParser = bodyParser.json();
 
 const client = await createClient()
   .on("error", (err) => console.log("Redis Client Error", err))
   .connect();
-
-// await client.set('key', 'value');
-// const value = await client.get('key');
-// await client.disconnect();
-
-app.use(express.static(path.resolve(__dirname, "../client/build")));
-app.use(cors());
+// TODO: await client.disconnect();
 
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
 
-app.post("/api/games", async (req, res) => {
-  let gameId = crypto.randomBytes(5).toString("base64url").toUpperCase();
-  while (await client.get(`sns:${gameId}:mod`)) {
-    gameId = crypto.randomBytes(5).toString("base64url").toUpperCase();
+const registerEndpoint = ({ method, path, handler }) => {
+  if (method === "get") {
+    app.get(path, async (req, res) => handler(req, res, client));
+  } else if (method === "post") {
+    app.post(path, jsonParser, async (req, res) => handler(req, res, client));
   }
-  const mod = crypto.randomBytes(5).toString("base64url").toUpperCase();
+};
 
-  await client.hSet(`sns:${gameId}:mod`, { name: "", mod });
-
-  res.json({ gameId, modId: mod });
-});
+gameEndpoints.forEach(registerEndpoint);
+playerEndpoints.forEach(registerEndpoint);
 
 // status of the game
-app.get("/api/games/:gameId", async (req, res) => {});
+app.get("/api/games/:gameId", async (req, res) => {
+  console.log("TODO");
+});
 
-app.get("/api/games/:gameId/players", async (req, res) => {});
+app.get("/api/games/:gameId/players", async (req, res) => {
+  console.log("TODO");
+});
 
-app.post("/api/games/:gameId/players", async (req, res) => {});
+app.get("/api/games/:gameId/scenarios", async (req, res) => {
+  console.log("TODO");
+});
 
-app.get("/api/games/:gameId/scenarios", async (req, res) => {});
+app.get("/api/games/:gameId/scenarios/songs", async (req, res) => {
+  console.log("TODO");
+});
 
-app.get("/api/games/:gameId/scenarios/songs", async (req, res) => {});
-
-app.post("/api/games/:gameId/scenarios", async (req, res) => {});
+app.post("/api/games/:gameId/scenarios", async (req, res) => {
+  console.log("TODO");
+});
 
 // app.get("/api/games/:gameId/songs", async (req, res) => {});
 
