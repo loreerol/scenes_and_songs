@@ -7,6 +7,7 @@ import { createClient } from "redis";
 
 import gameEndpoints from "./endpoints/game.js";
 import playerEndpoints from "./endpoints/player.js";
+import scenarioEndpoints from "./endpoints/scenario.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,21 +39,14 @@ const registerEndpoint = ({ method, path, handler }) => {
 
 gameEndpoints.forEach(registerEndpoint);
 playerEndpoints.forEach(registerEndpoint);
+scenarioEndpoints.forEach(registerEndpoint);
 
 // status of the game
 app.get("/api/games/:gameId", async (req, res) => {
   console.log("TODO");
 });
 
-app.get("/api/games/:gameId/scenarios", async (req, res) => {
-  console.log("TODO");
-});
-
 app.get("/api/games/:gameId/scenarios/songs", async (req, res) => {
-  console.log("TODO");
-});
-
-app.post("/api/games/:gameId/scenarios", async (req, res) => {
   console.log("TODO");
 });
 

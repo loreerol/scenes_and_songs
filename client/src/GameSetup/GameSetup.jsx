@@ -6,6 +6,7 @@ import PlayerJoin from "./PlayerJoin";
 
 const GameSetup = () => {
   const { gameId, playerId, playerName, isMod } = useContext(GameContext);
+  console.info("GameSetup", { gameId, playerId, playerName, isMod });
 
   return (
     <div>

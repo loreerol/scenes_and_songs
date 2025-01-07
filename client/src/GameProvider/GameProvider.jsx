@@ -12,16 +12,23 @@ export const GameContext = createContext({
 });
 
 export const GameProvider = ({ children }) => {
-  const [cookies, setCookie] = useCookies(["sns-game"]);
+  const gameId = window.location.pathname.split("/")[2];
+  const [cookies, setCookie, removeCookie] = useCookies(["sns-game"]);
   const cookie = cookies["sns-game"];
+
+  let playerId = cookie ? cookie.playerId : null;
+  let isMod = cookie ? cookie.isMod : false;
+
+  if (gameId && gameId !== cookie?.gameId) {
+    removeCookie("sns-game");
+    setCookie("sns-game", { gameId, playerId: null, isMod: false });
+    playerId = null;
+    isMod = false;
+  }
 
   const setGameCookie = ({ gameId, playerId, isMod }) => {
     setCookie("sns-game", { gameId, playerId, isMod });
   };
-
-  const gameId = cookie ? cookie.gameId : null;
-  const playerId = cookie ? cookie.playerId : null;
-  const isMod = cookie ? cookie.isMod : false;
 
   const { data: playerData } = useQuery(
     ["playerName", playerId],

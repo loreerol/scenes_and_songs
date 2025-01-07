@@ -1,16 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useMutation } from "react-query";
+import { GameContext } from "../GameProvider";
 import axios from "../axios";
 
 const CreateScenarios = () => {
   const [scenarios, setScenarios] = useState(Array(3).fill(""));
   const [error, setError] = useState();
+  const { gameId } = useContext(GameContext);
 
-  // const { mutate: postScenarios } = useMutation(() => {
-  //   axios
-  //     .post(`/games/${gameId}/scenarios`, { scenarios })
-  //     .then(({ data: { playerId } }) => {});
-  // });
+  const { mutate: postScenarios } = useMutation(() => {
+    axios.post(`/games/${gameId}/scenarios`, { scenarios }).catch((err) => {
+      const res = err.response;
+      if (res?.status === 400) setError(res.data.message);
+    });
+  });
 
   const onScenarioInput = (e, i) => {
     const newScenarios = [...scenarios];
@@ -28,6 +31,7 @@ const CreateScenarios = () => {
       return;
     }
     setError(undefined);
+    postScenarios();
   };
 
   return (
