@@ -1,6 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import express from "express";
+import expressWs from "express-ws";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { createClient } from "redis";
@@ -15,6 +16,7 @@ const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 3001;
 
 const app = express();
+expressWs(app);
 app.use(express.static(path.resolve(__dirname, "../client/build")));
 app.use(cors());
 
@@ -25,15 +27,47 @@ const client = await createClient()
   .connect();
 // TODO: await client.disconnect();
 
+const sockets = {};
+app.ws("/ws/player", (ws, req) => {
+  ws.on("message", (msg) => {
+    try {
+      msg = JSON.parse(msg);
+    } catch (e) {
+      console.log("Invalid JSON", msg);
+      ws.send("Error: Invalid JSON");
+      return;
+    }
+
+    if (msg.type === "register" && msg.gameId && msg.playerId) {
+      if (!sockets[msg.gameId]) {
+        client.hGet(`sns:${msg.gameId}`, "mod").then((mod) => {
+          if (mod) {
+            sockets[msg.gameId] = {};
+            sockets[msg.gameId][msg.playerId] = ws;
+          } else {
+            ws.send("Error: Game not found");
+          }
+        });
+      } else {
+        sockets[msg.gameId][msg.playerId] = ws;
+      }
+    }
+
+    ws.send("Success");
+  });
+});
+
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
 
 const registerEndpoint = ({ method, path, handler }) => {
   if (method === "get") {
-    app.get(path, async (req, res) => handler(req, res, client));
+    app.get(path, async (req, res) => await handler(req, res, client, sockets));
   } else if (method === "post") {
-    app.post(path, jsonParser, async (req, res) => handler(req, res, client));
+    app.post(path, jsonParser, async (req, res) => {
+      await handler(req, res, client, sockets);
+    });
   }
 };
 

@@ -31,19 +31,19 @@ const Scenarios = ({ edit, scenarios, setScenarios, setError }) => {
             🎭 Scenario {i + 1}
           </h2>
           <textarea
-            ref={(el) => (textareaRefs.current[i] = el)} 
+            ref={(el) => (textareaRefs.current[i] = el)}
             name={`scenario-${i}`}
             value={scenario}
             onInput={(e) => onScenarioInput(e, i)}
             className={`w-full text-lg border-4 border-purple-400 rounded-xl p-4 text-gray-900 bg-white focus:outline-none focus:ring-4 focus:ring-purple-500 placeholder-purple-400 ${
-              !edit ? " leading-tight resize-none cursor-default "  : ""
+              !edit ? " leading-tight resize-none cursor-default " : ""
             }`}
             style={
               !edit
                 ? {
                     paddingBottom: "0",
-                    lineHeight: "1", 
-                    height: "auto", 
+                    lineHeight: "1",
+                    height: "auto",
                   }
                 : {}
             }
