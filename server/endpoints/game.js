@@ -1,4 +1,4 @@
-import { generateId, currentTimeString } from "./utils.js";
+import { generateId, currentTimeString } from "../utils.js";
 
 const createGame = async (req, res, client) => {
   let gameId = generateId();

@@ -1,21 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
 import { useMutation } from "react-query";
 import axios from "../axios";
 
+import { GameContext } from "../GameProvider";
+
 const CreateGame = () => {
   const navigate = useNavigate();
-  const [_, setCookie] = useCookies(["sns-game"]);
+  const { setGameCookie } = useContext(GameContext);
 
   const { mutate: createGame } = useMutation(() => {
     axios.post("/games").then(({ data: { gameId, modId } }) => {
-      setCookie("sns-game", { gameId, isMod: true, playerId: modId });
+      setGameCookie({ gameId, isMod: true, playerId: modId });
       navigate(`/game/${gameId}`);
     });
   });
-
-  console.info("CreateGame");
 
   return (
     <div>

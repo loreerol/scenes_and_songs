@@ -1,4 +1,12 @@
-import { generateId } from "./utils.js";
+import { generateId } from "../utils.js";
+
+const getPlayer = async (req, res, client) => {
+  const gameId = req.params.gameId;
+  const playerId = req.params.playerId;
+
+  const player = await client.hGetAll(`sns:${gameId}:player:${playerId}`);
+  res.json(player);
+};
 
 const playerJoin = async (req, res, client) => {
   const gameId = req.params.gameId;
@@ -16,6 +24,11 @@ const playerJoin = async (req, res, client) => {
 };
 
 export default [
+  {
+    method: "get",
+    path: "/api/games/:gameId/players/:playerId",
+    handler: getPlayer,
+  },
   {
     method: "post",
     path: "/api/games/:gameId/players",

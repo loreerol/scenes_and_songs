@@ -5,8 +5,8 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { createClient } from "redis";
 
-import gameEndpoints from "./game.js";
-import playerEndpoints from "./player.js";
+import gameEndpoints from "./endpoints/game.js";
+import playerEndpoints from "./endpoints/player.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,10 +41,6 @@ playerEndpoints.forEach(registerEndpoint);
 
 // status of the game
 app.get("/api/games/:gameId", async (req, res) => {
-  console.log("TODO");
-});
-
-app.get("/api/games/:gameId/players", async (req, res) => {
   console.log("TODO");
 });
 

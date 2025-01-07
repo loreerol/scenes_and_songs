@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { useCookies } from "react-cookie";
+import React, { useState, useContext } from "react";
 import { useMutation } from "react-query";
+
 import axios from "../axios";
+import { GameContext } from "../GameProvider";
 
 const PlayerJoin = ({ gameId }) => {
+  const { setGameCookie } = useContext(GameContext);
   const [name, setName] = useState("");
-
-  const [_, setCookie] = useCookies(["sns-game"]);
 
   const { mutate: playerJoin } = useMutation(() => {
     axios
       .post(`/games/${gameId}/players`, { name })
       .then(({ data: { playerId } }) => {
-        setCookie("sns-game", { gameId, isMod: false, playerId });
+        setGameCookie({ gameId, isMod: false, playerId });
       });
   });
 
