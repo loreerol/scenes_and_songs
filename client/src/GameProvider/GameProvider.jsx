@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useQuery } from "react-query";
 import axios from "../axios";
@@ -6,7 +6,6 @@ import axios from "../axios";
 export const GameContext = createContext({
   gameId: null,
   playerId: null,
-  // playerName: null,
   isMod: false,
   setGameCookie: () => {},
 });
@@ -14,29 +13,30 @@ export const GameContext = createContext({
 export const GameProvider = ({ children }) => {
   const gameId = window.location.pathname.split("/")[2];
   const [cookies, setCookie, removeCookie] = useCookies(["sns-game"]);
-  const cookie = cookies["sns-game"];
 
-  let playerId = cookie ? cookie.playerId : null;
-  let isMod = cookie ? cookie.isMod : false;
+  const [state, setState] = useState({
+    playerId: cookies["sns-game"]?.playerId || null,
+    isMod: cookies["sns-game"]?.isMod || false,
+  });
 
-  if (gameId && gameId !== cookie?.gameId) {
-    removeCookie("sns-game");
-    setCookie("sns-game", { gameId, playerId: null, isMod: false });
-    playerId = null;
-    isMod = false;
-  }
+  const { playerId, isMod } = state;
+
+  useEffect(() => {
+    setState({
+      playerId: cookies["sns-game"]?.playerId || null,
+      isMod: cookies["sns-game"]?.isMod || false,
+    });
+  }, [cookies]);
 
   const setGameCookie = ({ gameId, playerId, isMod }) => {
     setCookie("sns-game", { gameId, playerId, isMod });
+    setState({ playerId, isMod });
   };
 
   const { data: playerData } = useQuery(
     ["playerName", playerId],
     () =>
-      axios.get(`games/${gameId}/players/${playerId}`).then((res) => {
-        console.log("GameProvider", res.data);
-        return res.data;
-      }),
+      axios.get(`games/${gameId}/players/${playerId}`).then((res) => res.data),
     {
       enabled: Boolean(gameId && playerId),
       staleTime: 1000 * 60 * 60, // 1 hour
