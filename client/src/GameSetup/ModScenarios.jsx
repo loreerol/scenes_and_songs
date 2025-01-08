@@ -47,7 +47,9 @@ const ModScenarios = () => {
   };
 
   const startGame = () => {
-    sendMessage(JSON.stringify({ type: "start-game", gameId }));
+    sendMessage(JSON.stringify({ type: "startGame", gameId }));
+    queryClient.invalidateQueries(["gameState"]);
+    queryClient.invalidateQueries(["songs"]);
     navigate(`/game/${gameId}/music`);
   };
 

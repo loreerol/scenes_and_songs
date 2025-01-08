@@ -4,12 +4,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { CookiesProvider } from "react-cookie";
 
+import "./styles.css";
 import CreateGame from "./CreateGame/CreateGame";
 import GameRedirect from "./GameRedirect";
 import GameSetup from "./GameSetup";
 import { GameProvider } from "./GameProvider";
-import "./styles.css";
 import MusicPhase from "./MusicPhase";
+import VotingPhase from "./VotingPhase";
 
 export const queryClient = new QueryClient();
 
@@ -24,8 +25,8 @@ root.render(
             <Route path="/game/:id" element={<GameRedirect />} />
             <Route path="/game/:id/set-up" element={<GameSetup />} />
             <Route path="/game/:id/music" element={<MusicPhase />} />
-            <Route path="/game/:id/vote/:scenario" element={<></>} />
-            <Route path="/game/:id/guess/:scenario" element={<></>} />
+            <Route path="/game/:id/vote" element={<VotingPhase />} />
+            <Route path="/game/:id/guess" element={<></>} />
             <Route path="/game/:id/results" element={<></>} />
           </Routes>
         </GameProvider>

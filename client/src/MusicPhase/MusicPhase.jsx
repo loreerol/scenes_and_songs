@@ -1,15 +1,27 @@
 import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { GameContext } from "../GameProvider";
 
 const MusicPhase = () => {
-  const { isMod, loading, currentScenario, scenarios, songs } =
-    useContext(GameContext);
+  const navigate = useNavigate();
+  const {
+    gameId,
+    isMod,
+    loading,
+    currentScenario,
+    scenarios,
+    songs,
+    sendMessage,
+  } = useContext(GameContext);
 
   const goToVoting = () => {
-    console.info("go to voting!");
+    sendMessage("startVoting");
+    navigate(`/game/${gameId}/vote`);
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading || typeof currentScenario === "undefined")
+    return <p>Loading...</p>;
 
   return (
     <div>
@@ -19,9 +31,9 @@ const MusicPhase = () => {
           <p>Scenario: "{scenarios[currentScenario]}"</p>
           <p>
             Songs:{" "}
-            {Object.entries(songs).map(
-              ([playerId, songs]) => songs[currentScenario].song
-            )}
+            {Object.entries(songs)
+              .map(([_, songs]) => songs[currentScenario].song)
+              .join(", ")}
           </p>
           <button onClick={goToVoting}>Go To Voting</button>
         </>

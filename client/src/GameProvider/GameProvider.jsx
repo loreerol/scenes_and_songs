@@ -66,7 +66,6 @@ export const GameProvider = ({ children }) => {
 
   // queries for data
   const { data: game, isLoading: gameStateLoading } = useGameState(gameId);
-  console.info("game data", game);
   const gameState = game?.gameState;
   const currentScenario = game?.currentScenario;
 

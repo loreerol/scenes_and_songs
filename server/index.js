@@ -36,7 +36,7 @@ const client = await createClient()
 // TODO: concurency clobering issues???
 const sockets = {};
 app.ws("/ws/player", (ws, req) => {
-  ws.on("message", (msg) => {
+  ws.on("message", async (msg) => {
     try {
       msg = JSON.parse(msg);
     } catch (e) {
@@ -51,10 +51,10 @@ app.ws("/ws/player", (ws, req) => {
       return;
     }
 
-    const registerHandler = (handler) => handler(ws, req, msg, client, sockets);
-
-    playerHandlers.forEach(registerHandler);
-    gameHandlers.forEach(registerHandler);
+    for (const handler of [...gameHandlers, ...playerHandlers]) {
+      //asdf
+      await handler(ws, req, msg, client, sockets);
+    }
 
     ws.send("Success");
   });

@@ -11,6 +11,8 @@ const GameRedirect = () => {
     navigate(`/game/${gameId}/set-up`);
   } else if (gameState === "music-phase") {
     navigate(`/game/${gameId}/music`);
+  } else if (gameState === "voting-phase") {
+    navigate(`/game/${gameId}/vote`);
   }
 
   return (
