@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { GameContext } from "../GameProvider";
 
 const Header = () => {
-  const { gameId, isMod, playerId } = useContext(GameContext);
+  const { gameId, isMod, playerName } = useContext(GameContext);
   return (
     <>
       <header className="text-center text-white py-8">
@@ -20,9 +20,11 @@ const Header = () => {
                 {gameId}
               </a>
             </p>
-            <p className="text-lg font-medium mt-2">
-              You are {isMod ? "the Moderator" : playerId}{" "}
-            </p>
+            {(playerName || isMod) && (
+              <p className="text-lg font-medium mt-2">
+                You are {isMod ? "the Moderator" : playerName}
+              </p>
+            )}
           </>
         )}
       </header>

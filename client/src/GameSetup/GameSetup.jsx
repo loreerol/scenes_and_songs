@@ -22,29 +22,20 @@ const GameSetup = () => {
   if (loading) {
     content = <p>Loading...</p>;
   } else if (!playerId) {
-    content = (
-      <div>
-        <h2 className="text-3xl font-semibold text-purple-700 mb-4 text-center">
-          Join the Game
-        </h2>
-        <PlayerJoin gameId={gameId} />
-      </div>
-    );
+    content = <PlayerJoin gameId={gameId} />;
   } else if (isMod) {
     content = <ModScenarios />;
   } else {
     if (gameState === "lobby") {
       content = (
-        <p className="text-xl text-gray-600 text-center">
-          🎭 Player <b className="text-purple-700">{playerName}</b> is waiting
-          for the moderator to create scenarios...
+        <p className="text-xl text-yellow-200 text-center">
+          🎭 Please wait for the moderator to create the scenarios...
         </p>
       );
     } else if (gameState === "song-selection") {
       content = <SongSubmition />;
     }
   }
-
   return <Layout>{content}</Layout>;
 };
 
