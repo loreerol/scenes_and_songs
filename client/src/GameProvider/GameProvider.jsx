@@ -21,6 +21,15 @@ export const GameProvider = ({ children }) => {
 
   const { playerId, isMod } = state;
 
+  const { data: scenariosData } = useQuery(
+    ["scenarios", gameId],
+    () => axios.get(`/games/${gameId}/scenarios`).then((res) => res.data),
+    {
+      enabled: Boolean(gameId),
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    }
+  );
+
   useEffect(() => {
     setState({
       playerId: cookies["sns-game"]?.playerId || null,
@@ -52,6 +61,7 @@ export const GameProvider = ({ children }) => {
         playerId,
         playerName: playerData?.name,
         isMod,
+        scenariosData,
         setGameCookie,
       }}
     >
