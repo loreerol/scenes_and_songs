@@ -1,27 +1,32 @@
 import React, { useContext } from "react";
-
+import Layout from "../Layout";
 import { GameContext } from "../GameProvider";
-import CreateScenarios from "./CreateScenarios";
+import ModScenarios from "./ModScenarios";
 import PlayerJoin from "./PlayerJoin";
 
 const GameSetup = () => {
   const { gameId, playerId, playerName, isMod } = useContext(GameContext);
-  console.info("GameSetup", { gameId, playerId, playerName, isMod });
 
   return (
-    <div>
-      <h1>Scenes and Songs</h1>
-      <p>
-        Game Link: <a href={`http://localhost:3000/game/${gameId}`}>{gameId}</a>
-      </p>
-      {playerId && isMod && <CreateScenarios />}
+    <Layout>
+      {playerId && isMod && (
+          <ModScenarios />
+      )}
       {playerId && !isMod && (
-        <p>
-          Player <b>{playerName}</b> waiting for scenarios
+        <p className="text-xl text-gray-600 text-center">
+          🎭 Player <b className="text-purple-700">{playerName}</b> is waiting
+          for the moderator to create scenarios...
         </p>
       )}
-      {!playerId && <PlayerJoin gameId={gameId} />}
-    </div>
+      {!playerId && (
+        <div>
+          <h2 className="text-3xl font-semibold text-purple-700 mb-4 text-center">
+            Join the Game
+          </h2>
+          <PlayerJoin gameId={gameId} />
+        </div>
+      )}
+    </Layout>
   );
 };
 

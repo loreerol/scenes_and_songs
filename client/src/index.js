@@ -7,6 +7,7 @@ import { CookiesProvider } from "react-cookie";
 import CreateGame from "./CreateGame/CreateGame";
 import GameSetup from "./GameSetup";
 import { GameProvider } from "./GameProvider";
+import './styles.css';
 
 export const queryClient = new QueryClient();
 
