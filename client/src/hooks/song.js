@@ -7,10 +7,7 @@ export const useSongs = (gameId, gameState) =>
     ["songs"],
     () => axios.get(`games/${gameId}/songs`).then((res) => res.data.songs),
     {
-      enabled:
-        Boolean(gameId) &&
-        Boolean(gameState) &&
-        ["song-selection", "music-phase"].includes(gameState),
+      enabled: Boolean(gameId) && Boolean(gameState) && gameState !== "lobby",
       staleTime: 1000 * 60 * 60, // 1 hour
     }
   );

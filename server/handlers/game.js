@@ -23,11 +23,28 @@ const startVoting = async (ws, req, msg, client, sockets) => {
     return;
   }
 
-  await client.hSet(`sns:${msg.gameId}`, { state: "voting-phase" });
+  // get data
+  const gameId = msg.gameId;
+  const game = await client.hGetAll(`sns:${gameId}`);
+  const players = await client.lRange(`sns:${gameId}:players`, 0, -1);
 
-  const mod = await client.hGet(`sns:${msg.gameId}`, "mod");
+  // change state
+  await client.hSet(`sns:${gameId}`, { state: "voting-phase" });
+
+  // set default votes
+  const key = `sns:${gameId}:scenario:${game.scenario}:votes`;
+  await client.hSet(
+    key,
+    players.reduce(
+      (acc, playerId) =>
+        playerId === game.mod ? acc : { ...acc, [playerId]: 0 },
+      {}
+    )
+  );
+
+  // send messages to update clients
   Object.entries(sockets[msg.gameId]).forEach(([playerId, ws]) => {
-    if (playerId === mod) return;
+    if (playerId === game.mod) return;
     ws.send("votingStarted");
   });
 };
