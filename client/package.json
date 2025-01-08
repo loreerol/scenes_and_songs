@@ -12,7 +12,8 @@
     "react-query": "^3.39.3",
     "react-router-dom": "^6",
     "react-scripts": "^5.0.1",
-    "tailwind": "^4.0.0"
+    "tailwind": "^4.0.0",
+    "react-use-websocket": "^4.11.1"
   },
   "scripts": {
     "start": "react-scripts start",

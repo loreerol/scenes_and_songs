@@ -4,7 +4,16 @@ const getPlayer = async (req, res, client) => {
   const gameId = req.params.gameId;
   const playerId = req.params.playerId;
 
-  const player = await client.hGetAll(`sns:${gameId}:player:${playerId}`);
+  let player = await client.hGetAll(`sns:${gameId}:player:${playerId}`);
+  if (!player) {
+    const mod = await client.hGet(`sns:${gameId}`, "mod");
+    if (playerId === mod) {
+      player = { name: "Mod", isMod: true };
+    } else {
+      res.status(404).json({ message: "Player not found" });
+      return;
+    }
+  }
   res.json(player);
 };
 

@@ -3,15 +3,17 @@ import { GameContext } from "../GameProvider";
 import Scenarios from "./Scenarios";
 import axios from "../axios";
 import { useMutation, useQueryClient } from "react-query";
-import Wavey from "../CreateGame/Wavey";
 
 const ModScenarios = () => {
-  const { scenariosData, gameId } = useContext(GameContext);
-
-  // temporarily hard-coded
-  const waitingForUserData = true;
-
-  const [scenarios, setScenarios] = useState(Array(3).fill(""));
+  const {
+    gameId,
+    gameState,
+    loading,
+    scenarios: scenariosData,
+  } = useContext(GameContext);
+  const [scenarios, setScenarios] = useState(
+    scenariosData || Array(3).fill("")
+  );
   const [error, setError] = useState();
   const queryClient = useQueryClient();
 
@@ -23,10 +25,12 @@ const ModScenarios = () => {
       }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["scenarios", gameId]);
+        queryClient.invalidateQueries(["gameState"]);
       },
     }
   );
+
+  const scenariosSubmitted = gameState === "song-selection";
 
   const submitScenarios = () => {
     if (scenarios.some((scenario) => scenario === "")) {
@@ -41,14 +45,16 @@ const ModScenarios = () => {
     postScenarios();
   };
 
-  if (!scenariosData) {
+  if (loading) {
     return <p className="text-xl text-gray-600 text-center">Loading...</p>;
   }
 
   return (
     <div>
       <h2 className="text-4xl font-extrabold text-yellow-300 text-center mb-12">
-        {scenariosData.exists ? "Scenarios Created" : "Create Scenarios"}
+        {gameState === "song-selection"
+          ? "Scenarios Created"
+          : "Create Scenarios"}
       </h2>
       <form
         onSubmit={(e) => {
@@ -58,8 +64,8 @@ const ModScenarios = () => {
         className="space-y-12 text-center"
       >
         <Scenarios
-          edit={!scenariosData.exists}
-          scenarios={scenariosData.exists ? scenariosData.scenarios : scenarios}
+          edit={!scenariosSubmitted}
+          scenarios={scenarios}
           setScenarios={setScenarios}
           setError={setError}
         />
@@ -71,22 +77,16 @@ const ModScenarios = () => {
         )}
         <button
           type="submit"
-          disabled={scenariosData.exists}
+          disabled={scenariosSubmitted}
           className={`text-3xl font-extrabold rounded-full shadow-lg px-3 py-2 ${
-            scenariosData.exists
+            scenariosSubmitted
               ? "bg-green-500 text-white cursor-not-allowed"
               : "bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 text-white"
           }`}
         >
-          {scenariosData.exists ? "✔ Submitted" : "Submit"}
+          {scenariosSubmitted ? "✔ Submitted" : "Submit"}
         </button>
-        {scenariosData.exists ? (
-          waitingForUserData ? (
-            <Wavey text={"Waiting for user responses ..."} />
-          ) : (
-            <p>Users ready: Lore, Hristina</p>
-          )
-        ) : null}
+        {scenariosSubmitted && <button>Start Game</button>}
       </form>
     </div>
   );

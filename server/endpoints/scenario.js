@@ -9,10 +9,12 @@ const getScenarios = async (req, res, client) => {
     return;
   }
 
+  console.log("Scenarios: " + scenarios);
+
   res.json({ scenarios });
 };
 
-const createScenarios = async (req, res, client) => {
+const createScenarios = async (req, res, client, sockets) => {
   const gameId = req.params.gameId;
   const scenarios = req.body.scenarios;
   const scenariosKey = `sns:${gameId}:scenarios`;
@@ -24,6 +26,15 @@ const createScenarios = async (req, res, client) => {
   }
 
   await client.lPush(scenariosKey, scenarios);
+  await client.hSet(`sns:${gameId}`, { state: "song-selection" });
+  const mod = await client.hGet(`sns:${gameId}`, "mod");
+
+  Object.entries(sockets[gameId]).forEach(([playerId, ws]) => {
+    if (playerId === mod) return;
+    console.log("Sending senariosCreated to " + playerId);
+    ws.send("senariosCreated");
+  });
+
   res.json({ scenarios });
 };
 
