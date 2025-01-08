@@ -1,8 +1,7 @@
-import React, { useRef } from "react";
+import React from "react";
+import ScenarioCard from "./ScenarioCard";
 
 const Scenarios = ({ edit, scenarios, setScenarios, setError }) => {
-  const textareaRefs = useRef([]);
-
   const addScenario = () => {
     setScenarios([...scenarios, ""]);
   };
@@ -27,28 +26,12 @@ const Scenarios = ({ edit, scenarios, setScenarios, setError }) => {
     <div className="grid gap-8">
       {scenarios.map((scenario, i) => (
         <div key={i} className="relative">
-          <h2 className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-2xl font-extrabold text-white bg-purple-400 rounded-full px-6 py-2 shadow-md">
-            🎭 Scenario {i + 1}
-          </h2>
-          <textarea
-            ref={(el) => (textareaRefs.current[i] = el)}
-            name={`scenario-${i}`}
+          <ScenarioCard
+            index={i}
             value={scenario}
-            onInput={(e) => onScenarioInput(e, i)}
-            className={`w-full text-lg border-4 border-purple-400 rounded-xl p-4 text-gray-900 bg-white focus:outline-none focus:ring-4 focus:ring-purple-500 placeholder-purple-400 ${
-              !edit ? " leading-tight resize-none cursor-default " : ""
-            }`}
-            style={
-              !edit
-                ? {
-                    paddingBottom: "0",
-                    lineHeight: "1",
-                    height: "auto",
-                  }
-                : {}
-            }
+            onInputChange={(e) => onScenarioInput(e, i)}
             placeholder={`Enter something fun for Scenario ${i + 1}!`}
-            disabled={!edit}
+            edit={edit}
           />
           {edit && (
             <button

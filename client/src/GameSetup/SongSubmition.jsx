@@ -3,6 +3,7 @@ import { useMutation } from "react-query";
 
 import axios from "../axios";
 import { GameContext } from "../GameProvider";
+import ScenarioCard from "./ScenarioCard";
 
 const SongSubmition = () => {
   const {
@@ -48,7 +49,13 @@ const SongSubmition = () => {
     setSongs(newSongs);
   };
 
+  const onSubmit = (e) => {
+    e.preventDefault();
+    console.log("Songs submitted:", songs);
+  };
+
   return (
+<<<<<<< HEAD
     <div>
       {submitted ? (
         <p>Waiting for mod to start the game</p>
@@ -76,6 +83,38 @@ const SongSubmition = () => {
         </>
       )}
     </div>
+=======
+    <>
+      <p className="text-center text-lg font-medium text-yellow-300 mb-6">
+        Submit a song for each scenario
+      </p>
+      <form onSubmit={onSubmit} className="grid gap-6">
+        {scenarios.map((scenario, i) => (
+          <ScenarioCard
+            key={i}
+            index={i}
+            value={scenario}
+            placeholder={`Scenario ${i + 1}`}
+            edit={false}
+            responseInput={{
+              label: "Your Song:",
+              value: songs[i],
+              onChange: onSongInput,
+              placeholder: `Enter your song for Scenario ${i + 1}`,
+            }}
+          />
+        ))}
+        <div className="flex justify-center">
+          <button
+            type="submit"
+            className="bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 text-xl font-bold text-white py-3 px-8 rounded-full shadow-md hover:scale-105 transform transition duration-200"
+          >
+            Submit Songs 🎶
+          </button>
+        </div>
+      </form>
+    </>
+>>>>>>> d4f3808 (song submission ui)
   );
 };
 
