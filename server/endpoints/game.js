@@ -8,7 +8,7 @@ const getGameState = async (req, res, client) => {
     return;
   }
 
-  res.json({ gameState: game.state, currentScenerio: game.scenario });
+  res.json({ gameState: game.state, currentScenario: game.scenario });
 };
 
 const createGame = async (req, res, client, sockets) => {

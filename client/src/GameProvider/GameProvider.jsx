@@ -1,11 +1,9 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
-import { useQuery } from "react-query";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useNavigate } from "react-router-dom";
 
-import axios from "../axios";
-import { useGameState, usePlayer, useScenarios } from "../hooks";
+import { useGameState, usePlayer, useScenarios, useSongs } from "../hooks";
 import messageHandlers from "./messageHandlers";
 
 const socketUrl = "ws://localhost:3001/ws/player";
@@ -68,6 +66,7 @@ export const GameProvider = ({ children }) => {
 
   // queries for data
   const { data: game, isLoading: gameStateLoading } = useGameState(gameId);
+  console.info("game data", game);
   const gameState = game?.gameState;
   const currentScenario = game?.currentScenario;
 
@@ -81,17 +80,7 @@ export const GameProvider = ({ children }) => {
     gameState
   );
 
-  const { data: songs, isLoading: songsLoading } = useQuery(
-    ["songs"],
-    () => axios.get(`games/${gameId}/songs`).then((res) => res.data.songs),
-    {
-      enabled:
-        Boolean(gameId) &&
-        Boolean(gameState) &&
-        ["song-selection", "music-phase"].includes(gameState),
-      staleTime: 1000 * 60 * 60, // 1 hour
-    }
-  );
+  const { data: songs, isLoading: songsLoading } = useSongs(gameId, gameState);
 
   const loading =
     gameStateLoading || playerDataLoading || scenariosLoading || songsLoading;
