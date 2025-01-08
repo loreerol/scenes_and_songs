@@ -6,9 +6,13 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { createClient } from "redis";
 
+import playerHandlers from "./handlers/player.js";
+import gameHandlers from "./handlers/game.js";
+
 import gameEndpoints from "./endpoints/game.js";
 import playerEndpoints from "./endpoints/player.js";
 import scenarioEndpoints from "./endpoints/scenario.js";
+import songEndpoints from "./endpoints/song.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,41 +26,41 @@ app.use(cors());
 
 var jsonParser = bodyParser.json();
 
+// DB connection
 const client = await createClient()
   .on("error", (err) => console.log("Redis Client Error", err))
   .connect();
 // TODO: await client.disconnect();
 
+// Websockets ---------------------------------------------------------------
+// TODO: concurency clobering issues???
 const sockets = {};
 app.ws("/ws/player", (ws, req) => {
   ws.on("message", (msg) => {
     try {
       msg = JSON.parse(msg);
     } catch (e) {
-      console.log("Invalid JSON", msg);
+      console.error("Invalid JSON", msg);
       ws.send("Error: Invalid JSON");
       return;
     }
 
-    if (msg.type === "register" && msg.gameId && msg.playerId) {
-      if (!sockets[msg.gameId]) {
-        client.hGet(`sns:${msg.gameId}`, "mod").then((mod) => {
-          if (mod) {
-            sockets[msg.gameId] = {};
-            sockets[msg.gameId][msg.playerId] = ws;
-          } else {
-            ws.send("Error: Game not found");
-          }
-        });
-      } else {
-        sockets[msg.gameId][msg.playerId] = ws;
-      }
+    if (!msg.type) {
+      console.error("Invalid JSON", msg);
+      ws.send("Error: type is required");
+      return;
     }
+
+    const registerHandler = (handler) => handler(ws, req, msg, client, sockets);
+
+    playerHandlers.forEach(registerHandler);
+    gameHandlers.forEach(registerHandler);
 
     ws.send("Success");
   });
 });
 
+// API ---------------------------------------------------------------------
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
@@ -74,20 +78,7 @@ const registerEndpoint = ({ method, path, handler }) => {
 gameEndpoints.forEach(registerEndpoint);
 playerEndpoints.forEach(registerEndpoint);
 scenarioEndpoints.forEach(registerEndpoint);
-
-// status of the game
-app.get("/api/games/:gameId", async (req, res) => {
-  console.log("TODO");
-});
-
-app.get("/api/games/:gameId/scenarios/songs", async (req, res) => {
-  console.log("TODO");
-});
-
-// app.get("/api/games/:gameId/songs", async (req, res) => {});
-
-// app.post("/api/games/:gameId/songs", async (req, res) => {});
-// // data: player id and songs
+songEndpoints.forEach(registerEndpoint);
 
 // app.post("/api/games/:gameId/vote", async (req, res) => {});
 // // data: player id and scenario and vote

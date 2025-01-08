@@ -5,6 +5,7 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 
 import axios from "../axios";
 import messageHandlers from "./messageHandlers";
+import { useNavigate } from "react-router-dom";
 
 const socketUrl = "ws://localhost:3001/ws/player";
 
@@ -17,9 +18,10 @@ export const GameContext = createContext({
 
 export const GameProvider = ({ children }) => {
   const gameId = window.location.pathname.split("/")[2];
+  const navigate = useNavigate();
+  // cookies
   const [cookies, setCookie] = useCookies(["sns-game"]);
   const cookie = cookies["sns-game"];
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
   const [player, setPlayer] = useState({
     playerId: cookie?.playerId || null,
@@ -40,6 +42,14 @@ export const GameProvider = ({ children }) => {
     });
   }, [cookies]);
 
+  const setGameCookie = ({ gameId, playerId, isMod }) => {
+    setCookie("sns-game", { gameId, playerId, isMod });
+    setPlayer({ playerId, isMod });
+  };
+
+  // websockets
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+
   useEffect(() => {
     if (gameId && playerId && readyState === ReadyState.OPEN) {
       sendMessage(JSON.stringify({ type: "register", gameId, playerId }));
@@ -50,23 +60,22 @@ export const GameProvider = ({ children }) => {
     if (!lastMessage) return;
 
     const msg = lastMessage.data;
-    console.info(msg);
-    if (typeof msg === "string" && messageHandlers[msg]) messageHandlers[msg]();
+    console.info("Recieved message:", msg);
+    if (typeof msg === "string" && messageHandlers[msg])
+      messageHandlers[msg]({ navigate, gameId });
   }, [lastMessage?.data]);
 
-  const setGameCookie = ({ gameId, playerId, isMod }) => {
-    setCookie("sns-game", { gameId, playerId, isMod });
-    setPlayer({ playerId, isMod });
-  };
-
-  const { data: gameState, isLoading: gameStateLoading } = useQuery(
+  // queries for data
+  const { data: game, isLoading: gameStateLoading } = useQuery(
     ["gameState"],
-    () => axios.get(`games/${gameId}/state`).then((res) => res.data.gameState),
+    () => axios.get(`games/${gameId}/state`).then((res) => res.data),
     {
       enabled: Boolean(gameId),
       staleTime: 1000 * 60 * 60, // 1 hour
     }
   );
+  const gameState = game?.gameState;
+  const currentScenario = game?.currentScenario;
 
   const { data: playerData, isLoading: playerDataLoading } = useQuery(
     ["playerName"],
@@ -88,6 +97,21 @@ export const GameProvider = ({ children }) => {
     }
   );
 
+  const { data: songs, isLoading: songsLoading } = useQuery(
+    ["songs"],
+    () => axios.get(`games/${gameId}/songs`).then((res) => res.data.songs),
+    {
+      enabled:
+        Boolean(gameId) &&
+        Boolean(gameState) &&
+        ["song-selection", "music-phase"].includes(gameState),
+      staleTime: 1000 * 60 * 60, // 1 hour
+    }
+  );
+
+  const loading =
+    gameStateLoading || playerDataLoading || scenariosLoading || songsLoading;
+
   return (
     <GameContext.Provider
       value={{
@@ -97,8 +121,11 @@ export const GameProvider = ({ children }) => {
         isMod: isMod || playerData?.isMod,
         setGameCookie,
         gameState,
+        currentScenario,
         scenarios,
-        loading: gameStateLoading || playerDataLoading || scenariosLoading,
+        songs,
+        loading,
+        sendMessage,
       }}
     >
       {children}

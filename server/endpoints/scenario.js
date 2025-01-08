@@ -9,8 +9,6 @@ const getScenarios = async (req, res, client) => {
     return;
   }
 
-  console.log("Scenarios: " + scenarios);
-
   res.json({ scenarios });
 };
 
@@ -31,7 +29,6 @@ const createScenarios = async (req, res, client, sockets) => {
 
   Object.entries(sockets[gameId]).forEach(([playerId, ws]) => {
     if (playerId === mod) return;
-    console.log("Sending senariosCreated to " + playerId);
     ws.send("senariosCreated");
   });
 
