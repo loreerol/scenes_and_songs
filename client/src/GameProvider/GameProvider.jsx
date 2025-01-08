@@ -2,10 +2,11 @@ import React, { createContext, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useQuery } from "react-query";
 import useWebSocket, { ReadyState } from "react-use-websocket";
+import { useNavigate } from "react-router-dom";
 
 import axios from "../axios";
+import { useGameState, usePlayer, useScenarios } from "../hooks";
 import messageHandlers from "./messageHandlers";
-import { useNavigate } from "react-router-dom";
 
 const socketUrl = "ws://localhost:3001/ws/player";
 
@@ -66,35 +67,18 @@ export const GameProvider = ({ children }) => {
   }, [lastMessage?.data]);
 
   // queries for data
-  const { data: game, isLoading: gameStateLoading } = useQuery(
-    ["gameState"],
-    () => axios.get(`games/${gameId}/state`).then((res) => res.data),
-    {
-      enabled: Boolean(gameId),
-      staleTime: 1000 * 60 * 60, // 1 hour
-    }
-  );
+  const { data: game, isLoading: gameStateLoading } = useGameState(gameId);
   const gameState = game?.gameState;
   const currentScenario = game?.currentScenario;
 
-  const { data: playerData, isLoading: playerDataLoading } = useQuery(
-    ["playerName"],
-    () =>
-      axios.get(`games/${gameId}/players/${playerId}`).then((res) => res.data),
-    {
-      enabled: Boolean(gameId && playerId),
-      staleTime: 1000 * 60 * 60, // 1 hour
-    }
+  const { data: playerData, isLoading: playerDataLoading } = usePlayer(
+    gameId,
+    playerId
   );
 
-  const { data: scenarios, isLoading: scenariosLoading } = useQuery(
-    ["scenarios"],
-    () =>
-      axios.get(`games/${gameId}/scenarios`).then((res) => res.data.scenarios),
-    {
-      enabled: Boolean(gameId) && Boolean(gameState) && gameState !== "lobby",
-      staleTime: 1000 * 60 * 60, // 1 hour
-    }
+  const { data: scenarios, isLoading: scenariosLoading } = useScenarios(
+    gameId,
+    gameState
   );
 
   const { data: songs, isLoading: songsLoading } = useQuery(

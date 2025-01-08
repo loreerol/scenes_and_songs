@@ -4,6 +4,7 @@ import { useMutation } from "react-query";
 import axios from "../axios";
 import { GameContext } from "../GameProvider";
 import ScenarioCard from "./ScenarioCard";
+import { useSongsMutation } from "../hooks";
 
 const SongSubmition = () => {
   const {
@@ -25,17 +26,13 @@ const SongSubmition = () => {
     Boolean(playerSongs.some((s) => s.song))
   );
 
-  const { mutate: postSongs } = useMutation(() =>
-    axios
-      .post(`/games/${gameId}/songs`, { playerId, songs })
-      .then(() => {
-        setSubmitted(true);
-      })
-      .catch((err) => {
-        const res = err.response;
-        if (res?.status === 400) setError(res.data.message);
-      })
-  );
+  const { mutate: postSongs } = useSongsMutation(gameId, {
+    onSuccess: () => setSubmitted(true),
+    onError: (err) => {
+      const res = err.response;
+      if (res?.status === 400) setError(res.data.message);
+    },
+  });
 
   const submitSongs = (e) => {
     e.preventDefault();
@@ -44,7 +41,7 @@ const SongSubmition = () => {
       return;
     }
     setError(undefined);
-    postSongs();
+    postSongs({ playerId, songs });
   };
 
   const onSongInput = (e, i) => {

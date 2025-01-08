@@ -1,12 +1,11 @@
 import React, { useContext, useState } from "react";
-import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
+import { useScenariosMutation } from "../hooks";
 
-import axios from "../axios";
 import { GameContext } from "../GameProvider";
 import { queryClient } from "../index";
 
 import Scenarios from "./Scenarios";
-import { useNavigate } from "react-router-dom";
 
 const ModScenarios = () => {
   const navigate = useNavigate();
@@ -22,18 +21,15 @@ const ModScenarios = () => {
   );
   const [error, setError] = useState();
 
-  const { mutate: postScenarios } = useMutation(
-    () =>
-      axios.post(`/games/${gameId}/scenarios`, { scenarios }).catch((err) => {
-        const res = err.response;
-        if (res?.status === 400) setError(res.data.message);
-      }),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["gameState"]);
-      },
-    }
-  );
+  const { mutate: postScenarios } = useScenariosMutation(gameId, {
+    onError: (err) => {
+      const res = err.response;
+      if (res?.status === 400) setError(res.data.message);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["gameState"]);
+    },
+  });
 
   const scenariosSubmitted = gameState === "song-selection";
 
@@ -47,7 +43,7 @@ const ModScenarios = () => {
       return;
     }
     setError(undefined);
-    postScenarios();
+    postScenarios({ scenarios });
   };
 
   const startGame = () => {
@@ -97,12 +93,16 @@ const ModScenarios = () => {
           {scenariosSubmitted ? "✔ Submitted" : "Submit"}
         </button>
       </form>
-      {scenariosSubmitted && <button
+      {scenariosSubmitted && (
+        <button
           onClick={startGame}
-          className={"text-3xl font-extrabold rounded-full shadow-lg px-3 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 text-white"}
+          className={
+            "text-3xl font-extrabold rounded-full shadow-lg px-3 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 text-white"
+          }
         >
           Start Game
-        </button>}
+        </button>
+      )}
     </div>
   );
 };
