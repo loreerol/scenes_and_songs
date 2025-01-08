@@ -1,21 +1,26 @@
 import React, { useContext, useState } from "react";
-import { GameContext } from "../GameProvider";
-import Scenarios from "./Scenarios";
+import { useMutation } from "react-query";
+
 import axios from "../axios";
-import { useMutation, useQueryClient } from "react-query";
+import { GameContext } from "../GameProvider";
+import { queryClient } from "../index";
+
+import Scenarios from "./Scenarios";
+import { useNavigate } from "react-router-dom";
 
 const ModScenarios = () => {
+  const navigate = useNavigate();
   const {
     gameId,
     gameState,
     loading,
     scenarios: scenariosData,
+    sendMessage,
   } = useContext(GameContext);
   const [scenarios, setScenarios] = useState(
     scenariosData || Array(3).fill("")
   );
   const [error, setError] = useState();
-  const queryClient = useQueryClient();
 
   const { mutate: postScenarios } = useMutation(
     () =>
@@ -43,6 +48,11 @@ const ModScenarios = () => {
     }
     setError(undefined);
     postScenarios();
+  };
+
+  const startGame = () => {
+    sendMessage(JSON.stringify({ type: "start-game", gameId }));
+    navigate(`/game/${gameId}/music`);
   };
 
   if (loading) {
@@ -86,8 +96,8 @@ const ModScenarios = () => {
         >
           {scenariosSubmitted ? "✔ Submitted" : "Submit"}
         </button>
-        {scenariosSubmitted && <button>Start Game</button>}
       </form>
+      {scenariosSubmitted && <button onClick={startGame}>Start Game</button>}
     </div>
   );
 };

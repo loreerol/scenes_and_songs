@@ -2,8 +2,11 @@ import { queryClient } from "..";
 
 const messageHandlers = {
   senariosCreated: () => {
-    console.log("Scenarios created event!");
     queryClient.invalidateQueries(["gameState"]);
+  },
+  gameStarted: ({ navigate, gameId }) => {
+    queryClient.invalidateQueries(["gameState", "songs"]);
+    navigate(`/game/${gameId}/music`);
   },
 };
 

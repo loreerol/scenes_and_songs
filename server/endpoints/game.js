@@ -2,13 +2,13 @@ import { generateId, currentTimeString } from "../utils.js";
 
 const getGameState = async (req, res, client) => {
   const gameId = req.params.gameId;
-  const gameState = await client.hGet(`sns:${gameId}`, "state");
-  if (!gameState) {
+  const game = await client.hGetAll(`sns:${gameId}`);
+  if (!game) {
     res.status(404).json({ message: "Game not found" });
     return;
   }
 
-  res.json({ gameState });
+  res.json({ gameState: game.state, currentScenerio: game.scenario });
 };
 
 const createGame = async (req, res, client, sockets) => {
