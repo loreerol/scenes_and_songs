@@ -96,15 +96,13 @@ const ModScenarios = () => {
         >
           {scenariosSubmitted ? "✔ Submitted" : "Submit"}
         </button>
-       {scenariosSubmitted && <button
-          type="submit"
-          disabled={scenariosSubmitted}
+      </form>
+      {scenariosSubmitted && <button
+          onClick={startGame}
           className={"text-3xl font-extrabold rounded-full shadow-lg px-3 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 text-white"}
         >
           Start Game
         </button>}
-      </form>
-      {scenariosSubmitted && <button onClick={startGame}>Start Game</button>}
     </div>
   );
 };
