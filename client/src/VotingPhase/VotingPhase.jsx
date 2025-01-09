@@ -100,10 +100,9 @@ const VotingPhase = () => {
     navigate(`/game/${gameId}/guess`);
   };
 
-  const currentScenarioVotes = Object.values(votes[currentScenario]).reduce(
-    (a, b) => Number(a) + Number(b),
-    0
-  );
+  const currentScenarioVotes = Object.values(
+    votes[currentScenario] || []
+  ).reduce((a, b) => Number(a) + Number(b), 0);
   const totalPlayers = players.filter(({ isMod }) => !isMod).length;
   const votingStateMessage = `${currentScenarioVotes}/${totalPlayers} players have voted.`;
 
