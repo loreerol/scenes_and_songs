@@ -8,6 +8,7 @@ import {
   usePlayers,
   useScenarios,
   useSongs,
+  useVotes,
   useWinningSongs,
 } from "../hooks";
 import messageHandlers from "./messageHandlers";
@@ -83,6 +84,8 @@ export const GameProvider = ({ children }) => {
     gameState
   );
 
+  const { data: votes, isLoading: votesLoading } = useVotes(gameId, gameState);
+
   const { data: winningSongs, isLoading: winningSongsLoading } =
     useWinningSongs(gameId, gameState);
 
@@ -93,6 +96,7 @@ export const GameProvider = ({ children }) => {
     playerDataLoading ||
     scenariosLoading ||
     songsLoading ||
+    votesLoading ||
     winningSongsLoading;
 
   return (
@@ -109,6 +113,7 @@ export const GameProvider = ({ children }) => {
         scenarios,
         songs,
         winningSongs,
+        votes,
         loading,
         sendMessage,
       }}

@@ -1,3 +1,17 @@
+const getVotes = async (req, res, client) => {
+  const gameId = req.params.gameId;
+  const scenarios = await client.lRange(`sns:${gameId}:scenarios`, 0, -1);
+
+  const votes = await Promise.all(
+    scenarios.map(
+      async (_, i) =>
+        await client.hGetAll(`sns:${gameId}:scenario:${i}:votes`, 0, -1)
+    )
+  );
+
+  res.json({ votes });
+};
+
 const submitVote = async (req, res, client) => {
   const gameId = req.params.gameId;
   const { playerId: playerVoting, scenario, song } = req.body;
@@ -34,6 +48,11 @@ const submitVote = async (req, res, client) => {
 };
 
 export default [
+  {
+    method: "get",
+    path: "/api/games/:gameId/votes",
+    handler: getVotes,
+  },
   {
     method: "post",
     path: "/api/games/:gameId/votes",
