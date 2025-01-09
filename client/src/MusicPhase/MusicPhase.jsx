@@ -51,14 +51,17 @@ const MusicPhase = () => {
       {isMod ? (
         <>
           <div className="mb-4">
-            <AudioPlayer
-              videoUrl={scenarioSongs[currentSongIndex]}
-              scenario={scenarios[currentScenario]}
-              scenarioNumber={currentScenario}
-              songNumber={`Song ${currentSongIndex + 1} of ${
-                scenarioSongs.length
-              }`}
-            />
+            {scenarioSongs.length > 0 && scenarioSongs[currentSongIndex] ? (
+              <AudioPlayer
+                videoUrl={scenarioSongs[currentSongIndex]}
+                scenario={scenarios[currentScenario]}
+                songNumber={`Song ${currentSongIndex + 1} of ${scenarioSongs.length}`}
+              />
+            ) : (
+              <p className="text-center text-red-500 font-bold">
+                No songs available for this scenario.
+              </p>
+            )}
             <div className="flex justify-between justify-items-end mt-4">
               {currentSongIndex > 0 && (
                 <button

@@ -20,14 +20,14 @@ const AudioPlayer = ({ videoUrl, scenario, scenarioNumber, songNumber }) => {
 
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-
-  const {
-    data: videoTitle,
-    error,
-    isLoading,
-  } = useQuery(["videoTitle", videoId], () => fetchVideoTitle(videoId), {
-    enabled: !!videoId,
-  });
+  
+  const { data: videoTitle, error, isLoading } = useQuery(
+    ["videoTitle", videoId],
+    () => fetchVideoTitle(videoId),
+    {
+      enabled: !!videoId, 
+    }
+  );
 
   const opts = {
     height: "0",
