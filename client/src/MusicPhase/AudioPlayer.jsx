@@ -14,20 +14,20 @@ const fetchVideoTitle = async (videoId) => {
   return data.title;
 };
 
-const AudioPlayer = ({ videoUrl, scenario, songNumber }) => {
+const AudioPlayer = ({ videoUrl, scenario, scenarioNumber, songNumber }) => {
   const playerRef = useRef(null);
   const videoId = videoUrl.split("v=")[1]?.split("&")[0];
 
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  const { data: videoTitle, error, isLoading } = useQuery(
-    ["videoTitle", videoId],
-    () => fetchVideoTitle(videoId),
-    {
-      enabled: !!videoId, 
-    }
-  );
+  const {
+    data: videoTitle,
+    error,
+    isLoading,
+  } = useQuery(["videoTitle", videoId], () => fetchVideoTitle(videoId), {
+    enabled: !!videoId,
+  });
 
   const opts = {
     height: "0",
@@ -83,12 +83,18 @@ const AudioPlayer = ({ videoUrl, scenario, songNumber }) => {
   return (
     <div className="relative border-4 border-purple-400 rounded-xl p-6 bg-white shadow-md">
       <h2 className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-2xl font-extrabold text-white bg-purple-400 rounded-full px-6 py-2 shadow-md">
-        🎵 Scenario #
+        {`🎵 Scenario ${Number(scenarioNumber) + 1}`}
       </h2>
-      <h2 className={"w-full font-extrabold text-3xl p-4 pt-10 text-center text-purple-900"}>
+      <h2
+        className={
+          "w-full font-extrabold text-3xl p-4 pt-10 text-center text-purple-900"
+        }
+      >
         {scenario}
       </h2>
-      <h2 className="font-extrabold text-1xl pt-3 text-purple-900 bg-white ">{songNumber}</h2>
+      <h2 className="font-extrabold text-1xl pt-3 text-purple-900 bg-white ">
+        {songNumber}
+      </h2>
       {isLoading && <p>Loading video title...</p>}
       {error && <p className="text-red-500">Error: {error.message}</p>}
       {!isLoading && !error && (

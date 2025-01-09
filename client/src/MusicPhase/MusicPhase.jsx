@@ -54,7 +54,10 @@ const MusicPhase = () => {
             <AudioPlayer
               videoUrl={scenarioSongs[currentSongIndex]}
               scenario={scenarios[currentScenario]}
-              songNumber={`Song ${currentSongIndex + 1} of ${scenarioSongs.length}`}
+              scenarioNumber={currentScenario}
+              songNumber={`Song ${currentSongIndex + 1} of ${
+                scenarioSongs.length
+              }`}
             />
             <div className="flex justify-between justify-items-end mt-4">
               {currentSongIndex > 0 && (
@@ -85,7 +88,10 @@ const MusicPhase = () => {
           </div>
         </>
       ) : (
-        <ScenarioCard value={scenarios[currentScenario]} />
+        <ScenarioCard
+          value={scenarios[currentScenario]}
+          index={currentScenario}
+        />
       )}
     </Layout>
   );

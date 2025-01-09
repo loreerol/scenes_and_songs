@@ -5,9 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 import {
   useGameState,
+  useGuesses,
   usePlayers,
   useScenarios,
   useSongs,
+  useVotes,
   useWinningSongs,
 } from "../hooks";
 import messageHandlers from "./messageHandlers";
@@ -83,6 +85,13 @@ export const GameProvider = ({ children }) => {
     gameState
   );
 
+  const { data: votes, isLoading: votesLoading } = useVotes(gameId, gameState);
+
+  const { data: guesses, isLoading: guessesLoading } = useGuesses(
+    gameId,
+    gameState
+  );
+
   const { data: winningSongs, isLoading: winningSongsLoading } =
     useWinningSongs(gameId, gameState);
 
@@ -93,6 +102,8 @@ export const GameProvider = ({ children }) => {
     playerDataLoading ||
     scenariosLoading ||
     songsLoading ||
+    votesLoading ||
+    guessesLoading ||
     winningSongsLoading;
 
   return (
@@ -109,6 +120,8 @@ export const GameProvider = ({ children }) => {
         scenarios,
         songs,
         winningSongs,
+        votes,
+        guesses,
         loading,
         sendMessage,
       }}

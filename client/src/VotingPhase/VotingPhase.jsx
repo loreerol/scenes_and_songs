@@ -13,8 +13,10 @@ const VotingPhase = () => {
     playerId,
     isMod,
     currentScenario,
+    players,
     scenarios,
     songs: allSongs,
+    votes,
     winningSongs,
     loading,
     sendMessage,
@@ -64,6 +66,12 @@ const VotingPhase = () => {
     navigate(`/game/${gameId}/guess`);
   };
 
+  const currentScenarioVotes = Object.values(
+    votes[currentScenario] || []
+  ).reduce((a, b) => Number(a) + Number(b), 0);
+  const totalPlayers = players.filter(({ isMod }) => !isMod).length;
+  const votingStateMessage = `${currentScenarioVotes}/${totalPlayers} players have voted`;
+
   let content;
   if (gameState === "voting-phase") {
     if (isMod) {
@@ -71,6 +79,7 @@ const VotingPhase = () => {
         <>
           <p>Scenario: "{scenarios[currentScenario]}"</p>
           <p>Waiting for players to vote.</p>
+          <p>{votingStateMessage}</p>
           <button onClick={closeVoting}>Close Voting</button>
         </>
       );

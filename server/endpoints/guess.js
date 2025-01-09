@@ -1,3 +1,17 @@
+const getGuesses = async (req, res, client) => {
+  const gameId = req.params.gameId;
+  const scenarios = await client.lRange(`sns:${gameId}:scenarios`, 0, -1);
+
+  const guesses = await Promise.all(
+    scenarios.map(
+      async (_, i) =>
+        await client.hGetAll(`sns:${gameId}:scenario:${i}:guesses`, 0, -1)
+    )
+  );
+
+  res.json({ guesses });
+};
+
 const submitGuess = async (req, res, client) => {
   const gameId = req.params.gameId;
   const { playerId: guesser, song, guess: guessee } = req.body;
@@ -20,6 +34,11 @@ const submitGuess = async (req, res, client) => {
 };
 
 export default [
+  {
+    method: "get",
+    path: "/api/games/:gameId/guess",
+    handler: getGuesses,
+  },
   {
     method: "post",
     path: "/api/games/:gameId/guess",

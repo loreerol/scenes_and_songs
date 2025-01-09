@@ -16,6 +16,7 @@ const GuessingPhase = () => {
     players,
     songs,
     winningSongs,
+    guesses,
     loading,
     sendMessage,
   } = useContext(GameContext);
@@ -58,6 +59,12 @@ const GuessingPhase = () => {
     navigate(`/game/${gameId}/results`);
   };
 
+  const currentScenarioGuesses = Object.keys(
+    guesses[currentScenario] || []
+  ).length;
+  const totalPlayers = players.filter(({ isMod }) => !isMod).length;
+  const guessingStateMessage = `${currentScenarioGuesses}/${totalPlayers} players have guessed`;
+
   let content;
   if (isMod) {
     console.info("gameState", gameState);
@@ -65,6 +72,7 @@ const GuessingPhase = () => {
       content = (
         <>
           <p>Waiting for players to guess.</p>
+          <p>{guessingStateMessage}</p>
           <button onClick={closeGuessing}>Close Guessing</button>
         </>
       );
