@@ -1,5 +1,4 @@
 const submitVote = async (req, res, client) => {
-  console.log("submitVote");
   const gameId = req.params.gameId;
   const { playerId: playerVoting, scenario, song } = req.body;
 

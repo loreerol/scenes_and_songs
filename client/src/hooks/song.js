@@ -12,6 +12,24 @@ export const useSongs = (gameId, gameState) =>
     }
   );
 
+export const useWinningSongs = (gameId, gameState) =>
+  useQuery(
+    ["winningSongs"],
+    () =>
+      axios
+        .get(`games/${gameId}/songs/winning`)
+        .then((res) => res.data.winningSongs),
+    {
+      enabled:
+        Boolean(gameId) &&
+        [
+          "voting-phase-results",
+          "guessing-phase",
+          "guessing-phase-results",
+        ].includes(gameState),
+    }
+  );
+
 export const useSongsMutation = (gameId, options) =>
   useMutation(
     ({ playerId, songs }) =>

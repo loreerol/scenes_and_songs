@@ -11,6 +11,7 @@ import GameSetup from "./GameSetup";
 import { GameProvider } from "./GameProvider";
 import MusicPhase from "./MusicPhase";
 import VotingPhase from "./VotingPhase";
+import GuessingPhase from "./GuessingPhase";
 
 export const queryClient = new QueryClient();
 
@@ -26,8 +27,8 @@ root.render(
             <Route path="/game/:id/set-up" element={<GameSetup />} />
             <Route path="/game/:id/music" element={<MusicPhase />} />
             <Route path="/game/:id/vote" element={<VotingPhase />} />
-            <Route path="/game/:id/guess" element={<div>Guessing Phase</div>} />
-            <Route path="/game/:id/results" element={<></>} />
+            <Route path="/game/:id/guess" element={<GuessingPhase />} />
+            <Route path="/game/:id/results" element={<>Results</>} />
           </Routes>
         </GameProvider>
       </BrowserRouter>

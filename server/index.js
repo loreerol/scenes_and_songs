@@ -17,7 +17,8 @@ import playerEndpoints from "./endpoints/player.js";
 import scenarioEndpoints from "./endpoints/scenario.js";
 import songEndpoints from "./endpoints/song.js";
 import voteEndpoints from "./endpoints/vote.js";
-import youTubeEndpoints from "./endpoints/youtube.js"
+import guessEndpoints from "./endpoints/guess.js";
+import youTubeEndpoints from "./endpoints/youtube.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -85,6 +86,7 @@ playerEndpoints.forEach(registerEndpoint);
 scenarioEndpoints.forEach(registerEndpoint);
 songEndpoints.forEach(registerEndpoint);
 voteEndpoints.forEach(registerEndpoint);
+guessEndpoints.forEach(registerEndpoint);
 youTubeEndpoints.forEach(registerEndpoint);
 
 // Serve the client ---------------------------------------------------------
