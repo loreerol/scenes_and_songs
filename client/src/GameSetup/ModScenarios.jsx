@@ -12,6 +12,7 @@ const ModScenarios = () => {
   const {
     gameId,
     gameState,
+    songs,
     loading,
     scenarios: scenariosData,
     sendMessage,
@@ -52,6 +53,12 @@ const ModScenarios = () => {
     queryClient.invalidateQueries(["songs"]);
     navigate(`/game/${gameId}/music`);
   };
+
+  const playersReady = Object.values(songs).filter(
+    (submission) => submission.filter((s) => "song" in s).length
+  ).length;
+  const totalPlayers = Object.keys(songs).length;
+  const readyStateMessage = `${playersReady}/${totalPlayers} players are ready`;
 
   if (loading) {
     return <p className="text-xl text-gray-600 text-center">Loading...</p>;
@@ -96,14 +103,17 @@ const ModScenarios = () => {
         </button>
       </form>
       {scenariosSubmitted && (
-        <button
-          onClick={startGame}
-          className={
-            "text-3xl font-extrabold rounded-full shadow-lg px-3 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 text-white"
-          }
-        >
-          Start Game
-        </button>
+        <>
+          <p className={"text-white py-6 font-bold"}>{readyStateMessage}</p>
+          <button
+            onClick={startGame}
+            className={
+              "text-3xl font-extrabold rounded-full shadow-lg px-3 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 text-white"
+            }
+          >
+            Start Game
+          </button>
+        </>
       )}
     </div>
   );
