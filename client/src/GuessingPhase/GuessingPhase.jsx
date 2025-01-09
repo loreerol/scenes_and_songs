@@ -107,7 +107,8 @@ const GuessingPhase = () => {
               <p>Song: {song}</p>
               {players.map(
                 ({ id, name, isMod }) =>
-                  !isMod && (
+                  !isMod &&
+                  id !== playerId && (
                     <div key={id}>
                       <input
                         type="radio"
