@@ -74,7 +74,7 @@ const VotingPhase = () => {
     });
   }, [winningSongs, videoTitles]);
 
-  if (loading)
+  if (loading || typeof votes === "undefined")
     return <p className="text-center text-purple-500 font-bold">Loading...</p>;
 
   if (!currentScenario || !allSongs)
@@ -100,6 +100,14 @@ const VotingPhase = () => {
     navigate(`/game/${gameId}/guess`);
   };
 
+  const currentScenarioVotes = Object.values(votes[currentScenario]).reduce(
+    (a, b) => Number(a) + Number(b),
+    0
+  );
+  const totalPlayers = players.filter(({ isMod }) => !isMod).length;
+  const votingStateMessage = `${currentScenarioVotes}/${totalPlayers} players have voted.`;
+
+  console.info(scenarioSongs);
   const renderContent = () => {
     if (gameState === "voting-phase") {
       if (isMod) {
@@ -111,6 +119,7 @@ const VotingPhase = () => {
             <p className="text-lg text-gray-700 mt-4">
               Waiting for players to vote.
             </p>
+            <p>{votingStateMessage}</p>
             <button
               onClick={closeVoting}
               className="mt-6 px-6 py-2 bg-purple-500 text-white font-bold rounded-full shadow-md hover:bg-purple-600 focus:outline-none focus:ring-4 focus:ring-purple-300"

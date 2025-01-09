@@ -35,7 +35,13 @@ const GuessingPhase = () => {
     },
   });
 
-  if (loading || !players?.length || !songs || !winningSongs.length)
+  if (
+    loading ||
+    !players?.length ||
+    !songs ||
+    !winningSongs.length ||
+    typeof guesses === "undefined"
+  )
     return <p>Loading...</p>;
 
   const selectGuess = (e) => {
@@ -59,11 +65,9 @@ const GuessingPhase = () => {
     navigate(`/game/${gameId}/results`);
   };
 
-  const currentScenarioGuesses = Object.keys(
-    guesses[currentScenario] || []
-  ).length;
+  const currentScenarioGuesses = Object.keys(guesses[currentScenario]).length;
   const totalPlayers = players.filter(({ isMod }) => !isMod).length;
-  const guessingStateMessage = `${currentScenarioGuesses}/${totalPlayers} players have guessed`;
+  const guessingStateMessage = `${currentScenarioGuesses}/${totalPlayers} players have guessed.`;
 
   let content;
   if (isMod) {
