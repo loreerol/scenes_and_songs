@@ -26,7 +26,7 @@ root.render(
             <Route path="/game/:id/set-up" element={<GameSetup />} />
             <Route path="/game/:id/music" element={<MusicPhase />} />
             <Route path="/game/:id/vote" element={<VotingPhase />} />
-            <Route path="/game/:id/guess" element={<></>} />
+            <Route path="/game/:id/guess" element={<div>Guessing Phase</div>} />
             <Route path="/game/:id/results" element={<></>} />
           </Routes>
         </GameProvider>

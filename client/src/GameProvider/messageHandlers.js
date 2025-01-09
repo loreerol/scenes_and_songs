@@ -13,6 +13,10 @@ const messageHandlers = {
     queryClient.invalidateQueries(["gameState"]);
     navigate(`/game/${gameId}/vote`);
   },
+  startGuessing: ({ navigate, gameId }) => {
+    queryClient.invalidateQueries(["gameState"]);
+    navigate(`/game/${gameId}/guess`);
+  },
 };
 
 export default messageHandlers;
