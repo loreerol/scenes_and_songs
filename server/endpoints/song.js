@@ -20,6 +20,32 @@ const getSongs = async (req, res, client) => {
   res.json({ songs: songsByPlayer });
 };
 
+const getWinningSongs = async (req, res, client) => {
+  const gameId = req.params.gameId;
+
+  const scenario = await client.hGet(`sns:${gameId}`, "scenario");
+  const votes = await client.hGetAll(
+    `sns:${gameId}:scenario:${scenario}:votes`
+  );
+
+  const highestVoteCount = Math.max(...Object.values(votes)).toString();
+  const winningPlayers = Object.entries(votes)
+    .filter(([_, voteCount]) => voteCount === highestVoteCount)
+    .map(([playerId, _]) => playerId);
+
+  const winningSongs = [];
+  for (const playerId of winningPlayers) {
+    const song = await client.lRange(
+      `sns:${gameId}:player:${playerId}:songs`,
+      scenario,
+      scenario
+    );
+    winningSongs.push(song[0]);
+  }
+
+  res.json({ winningSongs });
+};
+
 const submitSongs = async (req, res, client) => {
   const gameId = req.params.gameId;
   const playerId = req.body.playerId;
@@ -74,6 +100,11 @@ export default [
     method: "get",
     path: "/api/games/:gameId/songs",
     handler: getSongs,
+  },
+  {
+    method: "get",
+    path: "/api/games/:gameId/songs/winning",
+    handler: getWinningSongs,
   },
   {
     method: "post",

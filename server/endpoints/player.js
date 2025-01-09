@@ -1,5 +1,23 @@
 import { generateId } from "../utils.js";
 
+const getPlayers = async (req, res, client) => {
+  const gameId = req.params.gameId;
+  const mod = await client.hGet(`sns:${gameId}`, "mod");
+  const players = await client.lRange(`sns:${gameId}:players`, 0, -1);
+
+  const playersData = [];
+  for (const playerId of players) {
+    const playerName = await client.hGet(
+      `sns:${gameId}:player:${playerId}`,
+      "name"
+    );
+    playersData.push({ id: playerId, name: playerName, isMod: false });
+  }
+  playersData.push({ id: mod, name: "Mod", isMod: true });
+
+  res.json({ players: playersData });
+};
+
 const getPlayer = async (req, res, client) => {
   const gameId = req.params.gameId;
   const playerId = req.params.playerId;
@@ -33,6 +51,11 @@ const playerJoin = async (req, res, client) => {
 };
 
 export default [
+  {
+    method: "get",
+    path: "/api/games/:gameId/players",
+    handler: getPlayers,
+  },
   {
     method: "get",
     path: "/api/games/:gameId/players/:playerId",

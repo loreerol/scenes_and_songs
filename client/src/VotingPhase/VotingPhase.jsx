@@ -2,17 +2,20 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { GameContext } from "../GameProvider";
-import { useVoteMutation } from "../hooks/vote";
+import { useVoteMutation } from "../hooks";
+import { queryClient } from "..";
 
 const VotingPhase = () => {
   const navigate = useNavigate();
   const {
     gameId,
+    gameState,
     playerId,
     isMod,
     currentScenario,
     scenarios,
     songs: allSongs,
+    winningSongs,
     loading,
     sendMessage,
   } = useContext(GameContext);
@@ -46,19 +49,26 @@ const VotingPhase = () => {
 
   const closeVoting = () => {
     sendMessage(JSON.stringify({ type: "closeVoting", gameId }));
+    queryClient.invalidateQueries(["gameState"]);
+  };
+
+  const goToGuessing = () => {
+    sendMessage(JSON.stringify({ type: "startGuessing", gameId }));
     navigate(`/game/${gameId}/guess`);
   };
 
-  return (
-    <div style={{ padding: 10 }}>
-      <p>VotingPhase</p>
-      {isMod ? (
+  let content;
+  if (gameState === "voting-phase") {
+    if (isMod) {
+      content = (
         <>
           <p>Scenario: "{scenarios[currentScenario]}"</p>
           <p>Waiting for players to vote.</p>
           <button onClick={closeVoting}>Close Voting</button>
         </>
-      ) : (
+      );
+    } else {
+      content = (
         <>
           <p>Scenario: "{scenarios[currentScenario]}"</p>
           {submitted ? (
@@ -90,7 +100,21 @@ const VotingPhase = () => {
             </>
           )}
         </>
-      )}
+      );
+    }
+  } else if (gameState === "voting-phase-results") {
+    content = (
+      <>
+        <p>Winning songs: {winningSongs.join(", ")}</p>
+        {isMod && <button onClick={goToGuessing}>Start Guessing</button>}
+      </>
+    );
+  }
+
+  return (
+    <div style={{ padding: 10 }}>
+      <p>Voting Phase</p>
+      {content}
     </div>
   );
 };

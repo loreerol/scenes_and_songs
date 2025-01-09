@@ -2,13 +2,12 @@ import { useQuery, useMutation } from "react-query";
 
 import axios from "../axios";
 
-export const usePlayer = (gameId, playerId) =>
+export const usePlayers = (gameId) =>
   useQuery(
-    ["playerName"],
-    () =>
-      axios.get(`games/${gameId}/players/${playerId}`).then((res) => res.data),
+    ["players"],
+    () => axios.get(`games/${gameId}/players`).then((res) => res.data.players),
     {
-      enabled: Boolean(gameId && playerId),
+      enabled: Boolean(gameId),
       staleTime: 1000 * 60 * 60, // 1 hour
     }
   );

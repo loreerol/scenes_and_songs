@@ -3,7 +3,13 @@ import { useCookies } from "react-cookie";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import { useNavigate } from "react-router-dom";
 
-import { useGameState, usePlayer, useScenarios, useSongs } from "../hooks";
+import {
+  useGameState,
+  usePlayers,
+  useScenarios,
+  useSongs,
+  useWinningSongs,
+} from "../hooks";
 import messageHandlers from "./messageHandlers";
 
 const socketUrl = "ws://localhost:3001/ws/player";
@@ -69,20 +75,25 @@ export const GameProvider = ({ children }) => {
   const gameState = game?.gameState;
   const currentScenario = game?.currentScenario;
 
-  const { data: playerData, isLoading: playerDataLoading } = usePlayer(
-    gameId,
-    playerId
-  );
+  const { data: players, isLoading: playerDataLoading } = usePlayers(gameId);
+  const playerData = players?.find((player) => player.id === playerId);
 
   const { data: scenarios, isLoading: scenariosLoading } = useScenarios(
     gameId,
     gameState
   );
 
+  const { data: winningSongs, isLoading: winningSongsLoading } =
+    useWinningSongs(gameId, gameState);
+
   const { data: songs, isLoading: songsLoading } = useSongs(gameId, gameState);
 
   const loading =
-    gameStateLoading || playerDataLoading || scenariosLoading || songsLoading;
+    gameStateLoading ||
+    playerDataLoading ||
+    scenariosLoading ||
+    songsLoading ||
+    winningSongsLoading;
 
   return (
     <GameContext.Provider
@@ -94,8 +105,10 @@ export const GameProvider = ({ children }) => {
         setGameCookie,
         gameState,
         currentScenario,
+        players,
         scenarios,
         songs,
+        winningSongs,
         loading,
         sendMessage,
       }}

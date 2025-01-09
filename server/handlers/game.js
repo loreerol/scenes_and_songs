@@ -60,6 +60,25 @@ const closeVoting = async (ws, req, msg, client, sockets) => {
 
   const gameId = msg.gameId;
   const game = await client.hGetAll(`sns:${gameId}`);
+  await client.hSet(`sns:${gameId}`, { state: "voting-phase-results" });
+
+  Object.entries(sockets[gameId]).forEach(([playerId, ws]) => {
+    if (playerId === game.mod) return;
+    ws.send("showVoteWinners");
+  });
+};
+
+const startGuessing = async (ws, req, msg, client, sockets) => {
+  if (msg.type !== "startGuessing") return;
+
+  if (!msg.gameId) {
+    console.error("Invalid JSON", msg);
+    ws.send("Error: gameId is required");
+    return;
+  }
+
+  const gameId = msg.gameId;
+  const game = await client.hGetAll(`sns:${gameId}`);
   await client.hSet(`sns:${gameId}`, { state: "guessing-phase" });
 
   Object.entries(sockets[gameId]).forEach(([playerId, ws]) => {
@@ -68,4 +87,4 @@ const closeVoting = async (ws, req, msg, client, sockets) => {
   });
 };
 
-export default [startGame, startVoting, closeVoting];
+export default [startGame, startVoting, closeVoting, startGuessing];

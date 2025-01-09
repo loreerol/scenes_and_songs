@@ -1,4 +1,5 @@
 export { useGameState, useCreateGameMutation } from "./game";
-export { usePlayer, usePlayerJoinMutation } from "./player";
+export { usePlayers, usePlayerJoinMutation } from "./player";
 export { useScenarios, useScenariosMutation } from "./scenario";
-export { useSongs, useSongsMutation } from "./song";
+export { useSongs, useWinningSongs, useSongsMutation } from "./song";
+export { useVoteMutation } from "./vote";

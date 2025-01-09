@@ -13,6 +13,9 @@ const messageHandlers = {
     queryClient.invalidateQueries(["gameState"]);
     navigate(`/game/${gameId}/vote`);
   },
+  showVoteWinners: () => {
+    queryClient.invalidateQueries(["gameState"]);
+  },
   startGuessing: ({ navigate, gameId }) => {
     queryClient.invalidateQueries(["gameState"]);
     navigate(`/game/${gameId}/guess`);
