@@ -67,7 +67,7 @@ const SongSubmition = () => {
           {error && (
             <p className="text-center text-red-500 font-semibold">{error}</p>
           )}
-          <form onSubmit={submitSongs} className="grid gap-6">
+          <form onSubmit={submitSongs} className="grid gap-6 pt-8">
             {songs.map(({ scenario, song }, i) => (
               <ScenarioCard
                 key={i}

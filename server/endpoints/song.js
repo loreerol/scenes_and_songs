@@ -31,11 +31,38 @@ const submitSongs = async (req, res, client) => {
     res.status(400).json({ message: "Songs for this player already exist" });
     return;
   }
+
+  const players = await client.lRange(`sns:${gameId}:players`, 0, -1);
+  const submissions = await Promise.all(
+    players.map(
+      async (id) =>
+        await client.lRange(`sns:${gameId}:player:${id}:songs`, 0, -1)
+    )
+  );
+
   const scenarios = await client.lRange(`sns:${gameId}:scenarios`, 0, -1);
 
-  const songs = scenarios.map(
-    (scenario) => songData.find((s) => s.scenario === scenario).song
-  );
+  const duplicates = [];
+  const songs = scenarios.map((scenario, i) => {
+    const song = songData.find((s) => s.scenario === scenario).song;
+    const submittedSongs = submissions
+      .filter((submission) => submission.length)
+      .map((submission) => submission[i]);
+
+    if (submittedSongs.includes(song)) {
+      duplicates.push(scenario);
+    }
+    return song;
+  });
+
+  if (duplicates.length) {
+    const message = `The songs chosen for the following scenarios have already been selected: ${duplicates.join(
+      ", "
+    )}. Please choose a different song.`;
+
+    res.status(400).json({ message });
+    return;
+  }
 
   await client.rPush(songsKey, songs);
 
