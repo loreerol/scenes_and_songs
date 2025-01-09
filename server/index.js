@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import express from "express";
@@ -14,6 +17,7 @@ import playerEndpoints from "./endpoints/player.js";
 import scenarioEndpoints from "./endpoints/scenario.js";
 import songEndpoints from "./endpoints/song.js";
 import voteEndpoints from "./endpoints/vote.js";
+import youTubeEndpoints from "./endpoints/youtube.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -81,6 +85,7 @@ playerEndpoints.forEach(registerEndpoint);
 scenarioEndpoints.forEach(registerEndpoint);
 songEndpoints.forEach(registerEndpoint);
 voteEndpoints.forEach(registerEndpoint);
+youTubeEndpoints.forEach(registerEndpoint);
 
 // Serve the client ---------------------------------------------------------
 app.listen(PORT, () => {
