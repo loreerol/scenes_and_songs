@@ -16,7 +16,7 @@ const VotingPhase = () => {
   const [selectedSong, setSelectedSong] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const { mutate: vote } = useVoteMutation(gameId, {
+  const { mutateAsync: vote } = useVoteMutation(gameId, {
     onSuccess: () => setSubmitted(true),
     onError: (err) => console.error(err.code),
   });

@@ -1,9 +1,7 @@
 const submitVote = async (req, res, client) => {
-  console.info("submitVote");
+  console.log("submitVote");
   const gameId = req.params.gameId;
-  const playerVoting = req.body.playerId;
-  const scenario = req.body.scenario;
-  const song = req.body.song;
+  const { playerId: playerVoting, scenario, song } = req.body;
 
   const voted = await client.get(`sns:${gameId}:player:${playerVoting}:voted`);
   if (voted) {
@@ -11,12 +9,13 @@ const submitVote = async (req, res, client) => {
     return;
   }
 
+  const players = await client.lRange(`sns:${gameId}:players`, 0, -1);
   const songs = [];
   for (const playerId of players) {
     const s = await client.lRange(
       `sns:${gameId}:player:${playerId}:songs`,
       scenario,
-      scenario + 1
+      scenario
     );
     songs.push({ playerId, song: s[0] });
   }
@@ -30,7 +29,7 @@ const submitVote = async (req, res, client) => {
     1
   );
 
-  await client.set(`sns:${gameId}:player:${playerVoting}:voted`, true);
+  await client.set(`sns:${gameId}:player:${playerVoting}:voted`, "true");
 
   res.json({ playerVoting, scenario, song });
 };

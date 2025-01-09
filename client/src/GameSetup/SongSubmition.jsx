@@ -1,7 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useMutation } from "react-query";
 
-import axios from "../axios";
 import { GameContext } from "../GameProvider";
 import ScenarioCard from "./ScenarioCard";
 import { useSongsMutation } from "../hooks";
