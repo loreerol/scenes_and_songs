@@ -54,15 +54,15 @@ const ModScenarios = () => {
     navigate(`/game/${gameId}/music`);
   };
 
-  const playersReady = Object.values(songs).filter(
-    (submission) => submission.filter((s) => "song" in s).length
-  ).length;
-  const totalPlayers = Object.keys(songs).length;
-  const readyStateMessage = `${playersReady}/${totalPlayers} players are ready`;
-
   if (loading) {
     return <p className="text-xl text-gray-600 text-center">Loading...</p>;
   }
+
+  const playersReady = Object.values(songs || []).filter(
+    (submission) => submission.filter((s) => "song" in s).length
+  ).length;
+  const totalPlayers = Object.keys(songs || []).length;
+  const readyStateMessage = `${playersReady}/${totalPlayers} players are ready`;
 
   return (
     <div>
