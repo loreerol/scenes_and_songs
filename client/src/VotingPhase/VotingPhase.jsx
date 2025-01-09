@@ -1,9 +1,11 @@
 import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { GameContext } from "../GameProvider";
 import { useVoteMutation } from "../hooks/vote";
 
 const VotingPhase = () => {
+  const navigate = useNavigate();
   const {
     gameId,
     playerId,
@@ -12,6 +14,7 @@ const VotingPhase = () => {
     scenarios,
     songs: allSongs,
     loading,
+    sendMessage,
   } = useContext(GameContext);
   const [selectedSong, setSelectedSong] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -41,7 +44,10 @@ const VotingPhase = () => {
     vote({ playerId, scenario: currentScenario, song: selectedSong });
   };
 
-  const closeVoting = () => {};
+  const closeVoting = () => {
+    sendMessage(JSON.stringify({ type: "closeVoting", gameId }));
+    navigate(`/game/${gameId}/guess`);
+  };
 
   return (
     <div style={{ padding: 10 }}>
@@ -63,19 +69,21 @@ const VotingPhase = () => {
               Songs: <br />
               <br />
               <form onSubmit={submitVote}>
-                {scenarioSongs.map((song) => (
-                  // song.playerId !== playerId &&
-                  <div key={song}>
-                    <input
-                      type="radio"
-                      name="song"
-                      value={song.song}
-                      checked={selectedSong === song.song}
-                      onChange={(e) => setSelectedSong(e.target.value)}
-                    />{" "}
-                    <label htmlFor={song.song}>{song.song}</label>
-                  </div>
-                ))}
+                {scenarioSongs.map(
+                  (song) =>
+                    song.playerId !== playerId && (
+                      <div key={song}>
+                        <input
+                          type="radio"
+                          name="song"
+                          value={song.song}
+                          checked={selectedSong === song.song}
+                          onChange={(e) => setSelectedSong(e.target.value)}
+                        />{" "}
+                        <label htmlFor={song.song}>{song.song}</label>
+                      </div>
+                    )
+                )}
                 <br />
                 <button type="submit">Submit</button>
               </form>

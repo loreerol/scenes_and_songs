@@ -17,7 +17,7 @@ const ScenarioCard = ({
         name={`scenario-${index}`}
         value={value}
         onInput={onInputChange}
-        className={`w-full text-lg rounded-xl p-4 text-gray-900 bg-white focus:outline-none focus:ring-4 focus:ring-purple-500 placeholder-purple-400 ${
+        className={`w-full font-extrabold text-3xl rounded-xl p-4 pt-10 text-center text-purple-900 bg-white focus:outline-none focus:ring-4 focus:ring-purple-500 placeholder-purple-400 ${
           responseInput ? "border-0" : "border-4 border-purple-400"
         } ${
           !edit ? " leading-tight resize-none cursor-default " : ""
