@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { GameContext } from "../GameProvider";
@@ -34,13 +34,19 @@ const VotingPhase = () => {
     },
   });
 
+  const scenarioSongs = useMemo(
+    () =>
+      allSongs
+        ? Object.entries(allSongs).map(([playerId, songs]) => ({
+            playerId,
+            song: songs[currentScenario].song,
+          }))
+        : [],
+    [allSongs, currentScenario]
+  );
+
   if (loading || typeof currentScenario === "undefined" || !allSongs)
     return <p>Loading...</p>;
-
-  const scenarioSongs = Object.entries(allSongs).map(([playerId, songs]) => ({
-    playerId,
-    song: songs[currentScenario].song,
-  }));
 
   const submitVote = (e) => {
     e.preventDefault();
@@ -54,6 +60,7 @@ const VotingPhase = () => {
 
   const goToGuessing = () => {
     sendMessage(JSON.stringify({ type: "startGuessing", gameId }));
+    queryClient.invalidateQueries(["gameState"]);
     navigate(`/game/${gameId}/guess`);
   };
 
@@ -82,7 +89,7 @@ const VotingPhase = () => {
                 {scenarioSongs.map(
                   (song) =>
                     song.playerId !== playerId && (
-                      <div key={song}>
+                      <div key={song.song}>
                         <input
                           type="radio"
                           name="song"

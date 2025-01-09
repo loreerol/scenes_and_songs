@@ -1,10 +1,12 @@
 import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { GameContext } from "../GameProvider";
 import { useGuessMutation } from "../hooks";
 import { queryClient } from "..";
 
 const GuessingPhase = () => {
+  const navigate = useNavigate();
   const {
     gameId,
     playerId,
@@ -53,10 +55,12 @@ const GuessingPhase = () => {
   const showRoundResults = () => {
     sendMessage(JSON.stringify({ type: "showRoundResults", gameId }));
     queryClient.invalidateQueries(["gameState"]);
+    navigate(`/game/${gameId}/results`);
   };
 
   let content;
   if (isMod) {
+    console.info("gameState", gameState);
     if (gameState === "guessing-phase") {
       content = (
         <>
