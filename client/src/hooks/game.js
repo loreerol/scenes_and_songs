@@ -12,5 +12,15 @@ export const useGameState = (gameId) =>
     }
   );
 
+export const useGameScores = (gameId) =>
+  useQuery(
+    ["gameScores"],
+    () => axios.get(`games/${gameId}/scores`).then((res) => res.data.scores),
+    {
+      enabled: Boolean(gameId),
+      staleTime: 1000 * 60 * 60, // 1 hour
+    }
+  );
+
 export const useCreateGameMutation = (options) =>
   useMutation(() => axios.post("/games").then((res) => res.data), options);

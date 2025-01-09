@@ -2,7 +2,8 @@ const submitVote = async (req, res, client) => {
   const gameId = req.params.gameId;
   const { playerId: playerVoting, scenario, song } = req.body;
 
-  const voted = await client.get(`sns:${gameId}:player:${playerVoting}:voted`);
+  const voteKey = `sns:${gameId}:scenario:${scenario}:player:${playerVoting}:voted`;
+  const voted = await client.get(voteKey);
   if (voted) {
     res.status(400).json({ message: "Player has already voted" });
     return;
@@ -28,7 +29,7 @@ const submitVote = async (req, res, client) => {
     1
   );
 
-  await client.set(`sns:${gameId}:player:${playerVoting}:voted`, "true");
+  await client.set(voteKey, "true");
 
   res.json({ playerVoting, scenario, song });
 };

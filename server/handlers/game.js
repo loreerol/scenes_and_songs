@@ -132,7 +132,7 @@ const endRound = async (ws, req, msg, client, sockets) => {
   const game = await client.hGetAll(`sns:${gameId}`);
   const scenarios = await client.lRange(`sns:${gameId}:scenarios`, 0, -1);
 
-  const newScenario = game.scenario + 1;
+  const newScenario = parseInt(game.scenario) + 1;
   if (newScenario >= scenarios.length) {
     await client.hSet(`sns:${gameId}`, { state: "game-over" });
     Object.entries(sockets[gameId]).forEach(([playerId, ws]) => {

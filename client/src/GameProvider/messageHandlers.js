@@ -24,9 +24,9 @@ const messageHandlers = {
     queryClient.invalidateQueries(["gameState"]);
     navigate(`/game/${gameId}/results`);
   },
-  endGame: ({ navigate, gameId }) => {
+  startNextRound: ({ navigate, gameId }) => {
     queryClient.invalidateQueries(["gameState"]);
-    navigate(`/game/${gameId}/results`);
+    navigate(`/game/${gameId}/music`);
   },
 };
 

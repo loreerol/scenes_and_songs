@@ -4,9 +4,9 @@ import axios from "../axios";
 
 export const useGuessMutation = (gameId, options) =>
   useMutation(
-    ({ playerId, guess }) =>
+    ({ playerId, song, guess }) =>
       axios
-        .post(`/games/${gameId}/guess`, { playerId, guess })
+        .post(`/games/${gameId}/guess`, { playerId, song, guess })
         .then((res) => res.data),
     options
   );
