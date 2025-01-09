@@ -9,9 +9,15 @@ const ScenarioCard = ({
   responseInput,
 }) => {
   return (
-    <div className={`relative ${responseInput ? "relative border-4 border-purple-400 rounded-xl p-4 text-gray-900 bg-white shadow-md" : ""}`}>
+    <div
+      className={`relative ${
+        responseInput
+          ? "relative border-4 border-purple-400 rounded-xl p-4 text-gray-900 bg-white shadow-md"
+          : ""
+      }`}
+    >
       <h2 className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-2xl font-extrabold text-white bg-purple-400 rounded-full px-6 py-2 shadow-md">
-        🎭 Scenario {index + 1}
+        🎭 Scenario {Number(index) + 1}
       </h2>
       <textarea
         name={`scenario-${index}`}
@@ -19,9 +25,7 @@ const ScenarioCard = ({
         onInput={onInputChange}
         className={`w-full font-extrabold text-3xl rounded-xl p-4 pt-10 text-center text-purple-900 bg-white focus:outline-none focus:ring-4 focus:ring-purple-500 placeholder-purple-400 ${
           responseInput ? "border-0" : "border-4 border-purple-400"
-        } ${
-          !edit ? " leading-tight resize-none cursor-default " : ""
-        }`}
+        } ${!edit ? " leading-tight resize-none cursor-default " : ""}`}
         style={{ height: edit ? "auto" : "auto" }}
         placeholder={placeholder}
         disabled={!edit}
