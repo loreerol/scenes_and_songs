@@ -13,6 +13,7 @@ import gameEndpoints from "./endpoints/game.js";
 import playerEndpoints from "./endpoints/player.js";
 import scenarioEndpoints from "./endpoints/scenario.js";
 import songEndpoints from "./endpoints/song.js";
+import voteEndpoints from "./endpoints/vote.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -79,16 +80,9 @@ gameEndpoints.forEach(registerEndpoint);
 playerEndpoints.forEach(registerEndpoint);
 scenarioEndpoints.forEach(registerEndpoint);
 songEndpoints.forEach(registerEndpoint);
+voteEndpoints.forEach(registerEndpoint);
 
-// app.post("/api/games/:gameId/vote", async (req, res) => {});
-// // data: player id and scenario and vote
-
-// app.get("/api/games/:gameId/:scenario/scenario-winner", async (req, res) => {});
-
-// app.post("/api/games/:gameId/:playerId/guess", async (req, res) => {});
-
-// app.get("/api/games/:gameId/results", async (req, res) => {});
-
+// Serve the client ---------------------------------------------------------
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });

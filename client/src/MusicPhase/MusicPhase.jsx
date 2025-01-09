@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { GameContext } from "../GameProvider";
+import { queryClient } from "..";
 
 const MusicPhase = () => {
   const navigate = useNavigate();
@@ -16,7 +17,8 @@ const MusicPhase = () => {
   } = useContext(GameContext);
 
   const goToVoting = () => {
-    sendMessage("startVoting");
+    sendMessage(JSON.stringify({ type: "startVoting", gameId }));
+    queryClient.invalidateQueries(["gameState"]);
     navigate(`/game/${gameId}/vote`);
   };
 
