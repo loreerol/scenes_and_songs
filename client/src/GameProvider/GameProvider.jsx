@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import {
   useGameState,
+  useGuesses,
   usePlayers,
   useScenarios,
   useSongs,
@@ -86,6 +87,11 @@ export const GameProvider = ({ children }) => {
 
   const { data: votes, isLoading: votesLoading } = useVotes(gameId, gameState);
 
+  const { data: guesses, isLoading: guessesLoading } = useGuesses(
+    gameId,
+    gameState
+  );
+
   const { data: winningSongs, isLoading: winningSongsLoading } =
     useWinningSongs(gameId, gameState);
 
@@ -97,6 +103,7 @@ export const GameProvider = ({ children }) => {
     scenariosLoading ||
     songsLoading ||
     votesLoading ||
+    guessesLoading ||
     winningSongsLoading;
 
   return (
@@ -114,6 +121,7 @@ export const GameProvider = ({ children }) => {
         songs,
         winningSongs,
         votes,
+        guesses,
         loading,
         sendMessage,
       }}
