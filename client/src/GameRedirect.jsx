@@ -11,13 +11,17 @@ const GameRedirect = () => {
     navigate(`/game/${gameId}/set-up`);
   } else if (gameState === "music-phase") {
     navigate(`/game/${gameId}/music`);
-  } else if (gameState === "voting-phase") {
+  } else if (["voting-phase", "voting-phase-results"].includes(gameState)) {
     navigate(`/game/${gameId}/vote`);
+  } else if (["guessing-phase", "guessing-phase-results"].includes(gameState)) {
+    navigate(`/game/${gameId}/guess`);
+  } else if (["round-results", "game-over"].includes(gameState)) {
+    navigate(`/game/${gameId}/results`);
   }
 
   return (
     <div>
-      <p>Redirecting...</p>
+      <p>This game does not esixt</p>
     </div>
   );
 };

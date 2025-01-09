@@ -22,7 +22,11 @@ export const useWinningSongs = (gameId, gameState) =>
     {
       enabled:
         Boolean(gameId) &&
-        ["voting-phase-results", "guessing-phase"].includes(gameState),
+        [
+          "voting-phase-results",
+          "guessing-phase",
+          "guessing-phase-results",
+        ].includes(gameState),
     }
   );
 

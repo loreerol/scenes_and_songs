@@ -28,7 +28,7 @@ root.render(
             <Route path="/game/:id/music" element={<MusicPhase />} />
             <Route path="/game/:id/vote" element={<VotingPhase />} />
             <Route path="/game/:id/guess" element={<GuessingPhase />} />
-            <Route path="/game/:id/results" element={<></>} />
+            <Route path="/game/:id/results" element={<>Results</>} />
           </Routes>
         </GameProvider>
       </BrowserRouter>
