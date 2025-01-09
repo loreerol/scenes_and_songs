@@ -15,10 +15,17 @@ const VotingPhase = () => {
   } = useContext(GameContext);
   const [selectedSong, setSelectedSong] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(null);
 
-  const { mutateAsync: vote } = useVoteMutation(gameId, {
+  const { mutate: vote } = useVoteMutation(gameId, {
     onSuccess: () => setSubmitted(true),
-    onError: (err) => console.error(err.code),
+    onError: (err) => {
+      if (err.response) {
+        setError(err.response.data.message);
+      } else {
+        console.error(err.code);
+      }
+    },
   });
 
   if (loading || typeof currentScenario === "undefined" || !allSongs)
@@ -29,9 +36,12 @@ const VotingPhase = () => {
     song: songs[currentScenario].song,
   }));
 
-  const submitVote = () => {
+  const submitVote = (e) => {
+    e.preventDefault();
     vote({ playerId, scenario: currentScenario, song: selectedSong });
   };
+
+  const closeVoting = () => {};
 
   return (
     <div style={{ padding: 10 }}>
@@ -40,7 +50,7 @@ const VotingPhase = () => {
         <>
           <p>Scenario: "{scenarios[currentScenario]}"</p>
           <p>Waiting for players to vote.</p>
-          <button>Close Voting</button>
+          <button onClick={closeVoting}>Close Voting</button>
         </>
       ) : (
         <>
@@ -49,6 +59,7 @@ const VotingPhase = () => {
             <p>Vote submitted!</p>
           ) : (
             <>
+              {error && <p style={{ color: "red" }}>{error}</p>}
               Songs: <br />
               <br />
               <form onSubmit={submitVote}>
