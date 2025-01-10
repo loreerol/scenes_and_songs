@@ -32,21 +32,10 @@ const MusicPhase = () => {
     scenarios,
     songs,
     randomSongOrder,
-    setRandomSongOrder,
     sendMessage,
   } = useContext(GameContext);
 
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
-
-  useEffect(() => {
-    if (songs) {
-      const numScenarioSongs = Object.values(songs)
-        .map((songData) => songData?.[currentScenario]?.song)
-        .filter(Boolean).length;
-      const randomizedOrder = randomize([...Array(numScenarioSongs).keys()]);
-      setRandomSongOrder(randomizedOrder);
-    }
-  }, [songs, setRandomSongOrder, currentScenario]);
 
   const goToVoting = () => {
     sendMessage(JSON.stringify({ type: "startVoting", gameId }));

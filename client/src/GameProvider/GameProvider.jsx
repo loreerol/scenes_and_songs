@@ -7,6 +7,7 @@ import {
   useGameState,
   useGuesses,
   usePlayers,
+  useRandomSongOrder,
   useScenarios,
   useSongs,
   useVotes,
@@ -29,8 +30,6 @@ export const GameProvider = ({ children }) => {
   // cookies
   const [cookies, setCookie] = useCookies(["sns-game"]);
   const cookie = cookies["sns-game"];
-
-  const [randomSongOrder, setRandomSongOrder] = useState([]);
 
   const [player, setPlayer] = useState({
     playerId: cookie?.playerId || null,
@@ -99,6 +98,9 @@ export const GameProvider = ({ children }) => {
 
   const { data: songs, isLoading: songsLoading } = useSongs(gameId, gameState);
 
+  const { data: randomSongOrder, isLoading: randomSongsOrderLoading } =
+    useRandomSongOrder(gameId, gameState);
+
   const loading =
     gameStateLoading ||
     playerDataLoading ||
@@ -106,6 +108,7 @@ export const GameProvider = ({ children }) => {
     songsLoading ||
     votesLoading ||
     guessesLoading ||
+    randomSongsOrderLoading ||
     winningSongsLoading;
 
   return (
@@ -122,7 +125,6 @@ export const GameProvider = ({ children }) => {
         scenarios,
         songs,
         randomSongOrder,
-        setRandomSongOrder,
         winningSongs,
         votes,
         guesses,

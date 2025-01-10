@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useScenariosMutation } from "../hooks";
+import { useScenariosMutation, useRandomSongOrderMutation } from "../hooks";
 
 import { GameContext } from "../GameProvider";
 import { queryClient } from "../index";
@@ -33,6 +33,16 @@ const ModScenarios = () => {
     },
   });
 
+  const { mutate: generateRandomOrder } = useRandomSongOrderMutation(gameId, {
+    onError: (err) => {
+      const res = err.response;
+      if (res?.status === 400) setError(res.data.message);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["gameState"]);
+    },
+  });
+
   const scenariosSubmitted = gameState === "song-selection";
 
   const submitScenarios = () => {
@@ -52,6 +62,7 @@ const ModScenarios = () => {
     sendMessage(JSON.stringify({ type: "startGame", gameId }));
     queryClient.invalidateQueries(["gameState"]);
     queryClient.invalidateQueries(["songs"]);
+    generateRandomOrder();
     navigate(`/game/${gameId}/music`);
   };
 
