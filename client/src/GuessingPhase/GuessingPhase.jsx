@@ -17,7 +17,7 @@ const GuessingPhase = () => {
     gameState,
     currentScenario,
     players,
-    songs,        
+    songs,
     winningSongs,
     guesses,
     loading,
@@ -38,17 +38,14 @@ const GuessingPhase = () => {
     },
   });
 
-  // useEffect(() => {
-  //   if(!guesses){
-  //     return [];
-  //   }
-  //   if (guesses?.[currentScenario]?.[playerId]) {
-  //     setSubmittedGuess(Boolean(guesses[currentScenario][playerId]));
-  //   }
-  // }, [currentScenario, guesses, guesses.currentScenario, playerId]);
+  useEffect(() => {
+    if (guesses?.[currentScenario]?.[playerId]) {
+      setSubmittedGuess(Boolean(guesses[currentScenario][playerId]));
+    }
+  }, [guesses?.[currentScenario], playerId]);
 
   const scenarioSongs = useMemo(() => {
-    if (!songs){
+    if (!songs) {
       return [];
     }
     return Object.entries(songs).map(([pId, scenarioData]) => {
@@ -75,13 +72,13 @@ const GuessingPhase = () => {
 
   if (
     loading ||
-    !players?.length > 0 ||
-    !songs ||              
-    !winningSongs.length > 0 ||
+    !players?.length ||
+    !songs ||
+    !winningSongs.length ||
     typeof guesses === "undefined"
-  ) 
+  )
     return <p>Loading...</p>;
-  
+
   const selectGuess = (e) => {
     const [song, player] = e.target.value.split("|");
     setGuess({ player, song });
@@ -104,8 +101,8 @@ const GuessingPhase = () => {
   };
 
   const currentScenarioGuesses = Object.keys(guesses[currentScenario]).length;
-const totalPlayers = players.filter(({ isMod }) => !isMod).length;
-const guessingStateMessage = `${currentScenarioGuesses}/${totalPlayers} players have guessed.`;
+  const totalPlayers = players.filter(({ isMod }) => !isMod).length;
+  const guessingStateMessage = `${currentScenarioGuesses}/${totalPlayers} players have guessed.`;
 
   let content;
   if (isMod) {
@@ -123,15 +120,18 @@ const guessingStateMessage = `${currentScenarioGuesses}/${totalPlayers} players 
         </div>
       );
     } else if (gameState === "guessing-phase-results") {
-      const songsForScenario = scenarioSongs.map(({ playerId, song, videoId }) => {
-        const title =
-          videoTitles.find((item) => item.videoId === videoId)?.title ||
-          song ||
-          "Unknown Title";
-        const playerName = players.find((pl) => pl.id === playerId)?.name || "Player";
+      const songsForScenario = scenarioSongs.map(
+        ({ playerId, song, videoId }) => {
+          const title =
+            videoTitles.find((item) => item.videoId === videoId)?.title ||
+            song ||
+            "Unknown Title";
+          const playerName =
+            players.find((pl) => pl.id === playerId)?.name || "Player";
 
-        return { playerName, song, videoId, title };
-      });
+          return { playerName, song, videoId, title };
+        }
+      );
 
       const winningScenarioSongs = songsForScenario.filter(({ song }) =>
         winningSongs.includes(song)
@@ -139,7 +139,9 @@ const guessingStateMessage = `${currentScenarioGuesses}/${totalPlayers} players 
 
       content = (
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-purple-800 mb-4">Results</h2>
+          <h2 className="text-xl font-semibold text-purple-800 mb-4">
+            Results
+          </h2>
           {winningScenarioSongs.length === 0 && (
             <p>No winning songs found for this scenario.</p>
           )}
@@ -156,7 +158,7 @@ const guessingStateMessage = `${currentScenarioGuesses}/${totalPlayers} players 
           </button>
         </div>
       );
-    } 
+    }
   } else {
     if (submittedGuess) {
       content = (
@@ -193,12 +195,17 @@ const guessingStateMessage = `${currentScenarioGuesses}/${totalPlayers} players 
                     ({ id, name, isMod }) =>
                       !isMod &&
                       id !== playerId && (
-                        <div key={id} className="flex items-center space-x-2 mt-2">
+                        <div
+                          key={id}
+                          className="flex items-center space-x-2 mt-2"
+                        >
                           <input
                             type="radio"
                             name="player"
                             value={`${songUrl}|${id}`}
-                            checked={guess.song === songUrl && guess.player === id}
+                            checked={
+                              guess.song === songUrl && guess.player === id
+                            }
                             onChange={selectGuess}
                             className="form-radio text-purple-600"
                           />

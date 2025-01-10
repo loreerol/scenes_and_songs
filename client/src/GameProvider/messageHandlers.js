@@ -13,6 +13,7 @@ const messageHandlers = {
   gameStarted: ({ navigate, gameId }) => {
     queryClient.invalidateQueries(["gameState"]);
     queryClient.invalidateQueries(["songs"]);
+    queryClient.invalidateQueries(["players"]);
     navigate(`/game/${gameId}/music`);
   },
   votingStarted: ({ navigate, gameId }) => {
