@@ -7,6 +7,7 @@ import {
   useGameState,
   useGuesses,
   usePlayers,
+  useRandomSongOrder,
   useScenarios,
   useSongs,
   useVotes,
@@ -97,6 +98,9 @@ export const GameProvider = ({ children }) => {
 
   const { data: songs, isLoading: songsLoading } = useSongs(gameId, gameState);
 
+  const { data: randomSongOrder, isLoading: randomSongsOrderLoading } =
+    useRandomSongOrder(gameId, gameState);
+
   const loading =
     gameStateLoading ||
     playerDataLoading ||
@@ -104,6 +108,7 @@ export const GameProvider = ({ children }) => {
     songsLoading ||
     votesLoading ||
     guessesLoading ||
+    randomSongsOrderLoading ||
     winningSongsLoading;
 
   return (
@@ -119,6 +124,7 @@ export const GameProvider = ({ children }) => {
         players,
         scenarios,
         songs,
+        randomSongOrder,
         winningSongs,
         votes,
         guesses,

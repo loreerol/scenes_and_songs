@@ -1,3 +1,18 @@
+// pulled from: https://www.geeksforgeeks.org/how-to-shuffle-an-array-using-javascript/
+const randomize = (array) =>
+  array.reduce(
+    (acc, _, i) => {
+      // Generate a random index
+      const random = Math.floor(Math.random() * (acc.length - i)) + i;
+
+      // Swap the element with random index element
+      [acc[i], acc[random]] = [acc[random], acc[i]];
+
+      return acc;
+    },
+    [...array] // Initialize accumulator as shoallow copy of given array
+  );
+
 const getSongs = async (req, res, client) => {
   const gameId = req.params.gameId;
   const players = await client.lRange(`sns:${gameId}:players`, 0, -1);
@@ -18,6 +33,20 @@ const getSongs = async (req, res, client) => {
   }
 
   res.json({ songs: songsByPlayer });
+};
+
+const getRandomSongOrder = async (req, res, client) => {
+  const gameId = req.params.gameId;
+  const randomSongOrderRaw = await client.lRange(
+    `sns:${gameId}:random_order`,
+    0,
+    -1
+  );
+  const randomSongOrder = randomSongOrderRaw.map((scenarioOrder) =>
+    scenarioOrder.split(",").map((num) => Number(num))
+  );
+
+  res.json({ randomSongOrder });
 };
 
 const getWinningSongs = async (req, res, client) => {
@@ -102,6 +131,34 @@ const submitSongs = async (req, res, client, sockets) => {
   res.json({ songs });
 };
 
+const generateRandomSongOrder = async (req, res, client) => {
+  const gameId = req.params.gameId;
+  const players = await client.lRange(`sns:${gameId}:players`, 0, -1);
+  const scenarios = await client.lRange(`sns:${gameId}:scenarios`, 0, -1);
+
+  const randomSongOrderKey = `sns:${gameId}:random_order`;
+
+  let activePlayers = 0;
+  for (const playerId of players) {
+    const songs = await client.lRange(
+      `sns:${gameId}:player:${playerId}:songs`,
+      0,
+      -1
+    );
+    if (songs.length === scenarios.length) {
+      activePlayers++;
+    }
+  }
+
+  const randomSongOrder = scenarios.map((_) =>
+    randomize([...Array(activePlayers).keys()]).join()
+  );
+
+  await client.rPush(randomSongOrderKey, randomSongOrder);
+
+  res.json({ randomSongOrder });
+};
+
 export default [
   {
     method: "get",
@@ -114,8 +171,18 @@ export default [
     handler: getWinningSongs,
   },
   {
+    method: "get",
+    path: "/api/games/:gameId/songs/random",
+    handler: getRandomSongOrder,
+  },
+  {
     method: "post",
     path: "/api/games/:gameId/songs",
     handler: submitSongs,
+  },
+  {
+    method: "post",
+    path: "/api/games/:gameId/songs/random",
+    handler: generateRandomSongOrder,
   },
 ];
