@@ -106,7 +106,6 @@ const VotingPhase = () => {
   const totalPlayers = players.filter(({ isMod }) => !isMod).length;
   const votingStateMessage = `${currentScenarioVotes}/${totalPlayers} players have voted.`;
 
-  console.info(scenarioSongs);
   const renderContent = () => {
     if (gameState === "voting-phase") {
       if (isMod) {

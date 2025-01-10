@@ -35,8 +35,9 @@ const getPlayer = async (req, res, client) => {
   res.json(player);
 };
 
-const playerJoin = async (req, res, client) => {
+const playerJoin = async (req, res, client, sockets) => {
   const gameId = req.params.gameId;
+  const game = await client.hGetAll(`sns:${gameId}`);
   const players = await client.lRange(`sns:${gameId}:players`, 0, -1);
 
   let playerId = generateId();
@@ -46,6 +47,11 @@ const playerJoin = async (req, res, client) => {
   await client.hSet(`sns:${gameId}:player:${playerId}`, {
     name: req.body.name,
   });
+
+  const modSocket = sockets[gameId][game.mod];
+  if (modSocket) {
+    modSocket.send("playerJoined");
+  }
 
   res.json({ playerId });
 };

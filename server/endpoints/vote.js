@@ -12,9 +12,11 @@ const getVotes = async (req, res, client) => {
   res.json({ votes });
 };
 
-const submitVote = async (req, res, client) => {
+const submitVote = async (req, res, client, sockets) => {
   const gameId = req.params.gameId;
   const { playerId: playerVoting, scenario, song } = req.body;
+
+  const game = await client.hGetAll(`sns:${gameId}`);
 
   const voteKey = `sns:${gameId}:scenario:${scenario}:player:${playerVoting}:voted`;
   const voted = await client.get(voteKey);
@@ -44,6 +46,11 @@ const submitVote = async (req, res, client) => {
   );
 
   await client.set(voteKey, "true");
+
+  const modSocket = sockets[gameId][game.mod];
+  if (modSocket) {
+    modSocket.send("updateVotes");
+  }
 
   res.json({ playerVoting, scenario, song });
 };
