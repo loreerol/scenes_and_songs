@@ -42,13 +42,14 @@ const PlayerJoin = ({ gameId }) => {
             />
           </label>
         </div>
-
+        <div className="flex mt-5 flex-col items-center">
         <button
           type="submit"
           className="bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 text-lg font-bold text-white py-2 px-6 rounded-full shadow-lg hover:scale-105 transition-transform"
         >
           Join Game 🎮
         </button>
+        </div>
       </form>
     </div>
   );
