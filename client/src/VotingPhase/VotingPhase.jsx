@@ -157,26 +157,30 @@ const VotingPhase = () => {
                             (item) => item.videoId === song.videoId
                           )?.title || "Unknown Title";
                         return (
-                          <div
-                            key={song.song}
-                            className="flex items-center space-x-2"
-                          >
-                            <input
-                              type="radio"
-                              id={song.song}
-                              name="song"
-                              value={song.song}
-                              checked={selectedSong === song.song}
-                              onChange={(e) => setSelectedSong(e.target.value)}
-                              className="h-5 w-5 text-purple-500 focus:ring-purple-400"
-                            />
-                            <label
-                              htmlFor={song.song}
-                              className="text-lg font-medium text-purple-900"
+                          song.playerId !== playerId && (
+                            <div
+                              key={song.song}
+                              className="flex items-center space-x-2"
                             >
-                              {title}
-                            </label>
-                          </div>
+                              <input
+                                type="radio"
+                                id={song.song}
+                                name="song"
+                                value={song.song}
+                                checked={selectedSong === song.song}
+                                onChange={(e) =>
+                                  setSelectedSong(e.target.value)
+                                }
+                                className="h-5 w-5 text-purple-500 focus:ring-purple-400"
+                              />
+                              <label
+                                htmlFor={song.song}
+                                className="text-lg font-medium text-purple-900"
+                              >
+                                {title}
+                              </label>
+                            </div>
+                          )
                         );
                       })
                     )}
