@@ -55,7 +55,10 @@ const MusicPhase = () => {
               <AudioPlayer
                 videoUrl={scenarioSongs[currentSongIndex]}
                 scenario={scenarios[currentScenario]}
-                songNumber={`Song ${currentSongIndex + 1} of ${scenarioSongs.length}`}
+                scenarioNumber={currentScenario}
+                songNumber={`Song ${currentSongIndex + 1} of ${
+                  scenarioSongs.length
+                }`}
               />
             ) : (
               <p className="text-center text-red-500 font-bold">
