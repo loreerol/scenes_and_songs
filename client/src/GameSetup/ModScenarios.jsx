@@ -13,6 +13,7 @@ const ModScenarios = () => {
     gameId,
     gameState,
     songs,
+    players,
     loading,
     scenarios: scenariosData,
     sendMessage,
@@ -61,8 +62,8 @@ const ModScenarios = () => {
   const playersReady = Object.values(songs || []).filter(
     (submission) => submission.filter((s) => "song" in s).length
   ).length;
-  const totalPlayers = Object.keys(songs || []).length;
-  const readyStateMessage = `${playersReady}/${totalPlayers} players are ready`;
+  const totalPlayers = players.filter(({ isMod }) => !isMod).length;
+  const readyStateMessage = `${playersReady}/${totalPlayers} players are ready.`;
 
   return (
     <div>

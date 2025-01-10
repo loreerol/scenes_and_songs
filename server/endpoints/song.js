@@ -46,11 +46,13 @@ const getWinningSongs = async (req, res, client) => {
   res.json({ winningSongs });
 };
 
-const submitSongs = async (req, res, client) => {
+const submitSongs = async (req, res, client, sockets) => {
   const gameId = req.params.gameId;
   const playerId = req.body.playerId;
   const songData = req.body.songs;
   const songsKey = `sns:${gameId}:player:${playerId}:songs`;
+
+  const game = await client.hGetAll(`sns:${gameId}`);
 
   const existingSongs = await client.lRange(songsKey, 0, -1);
   if (existingSongs.length) {
@@ -91,6 +93,11 @@ const submitSongs = async (req, res, client) => {
   }
 
   await client.rPush(songsKey, songs);
+
+  const modSocket = sockets[gameId][game.mod];
+  if (modSocket) {
+    modSocket.send("updateSongs");
+  }
 
   res.json({ songs });
 };

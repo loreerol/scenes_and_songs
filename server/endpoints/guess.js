@@ -12,7 +12,7 @@ const getGuesses = async (req, res, client) => {
   res.json({ guesses });
 };
 
-const submitGuess = async (req, res, client) => {
+const submitGuess = async (req, res, client, sockets) => {
   const gameId = req.params.gameId;
   const { playerId: guesser, song, guess: guessee } = req.body;
 
@@ -29,6 +29,11 @@ const submitGuess = async (req, res, client) => {
   await client.hSet(`sns:${gameId}:scenario:${game.scenario}:guesses`, {
     [guesser]: `${song}|${guessee}`,
   });
+
+  const modSocket = sockets[gameId][game.mod];
+  if (modSocket) {
+    modSocket.send("updateGuesses");
+  }
 
   res.json({ playerId: guesser, guess: guessee });
 };
