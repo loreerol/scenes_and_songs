@@ -105,20 +105,19 @@ const Results = () => {
           </ul>
         </div>
         {parseInt(currentScenario) === scenarios.length - 1 && (
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-purple-700 text-center">
-              {winners.length > 1
-                ? "🏅 The Winners Are:"
-                : "🏅 The Winner Is:"}
-            </h2>
-            <p className="text-xl text-gray-800 text-center mt-2">
-              {winners.map((winner) => winner.name).join(", ")}
-            </p>
-          </div>
-        )}
+  <div className="mt-10 text-center">
+    <h2 className="text-4xl font-extrabold text-yellow-500 animate-bounce">
+      🎉 {winners.length > 1 ? "🏅 The Winners Are:" : "🏆 The Winner Is:"}
+    </h2>
+    <p className="text-4xl font-bold text-purple-700 mt-4">
+      {winners.map((winner) => winner.name).join(", ")}
+    </p>
+
+  </div>
+)}
         {isMod && (
           <div className="text-center mt-6">
-            {parseInt(currentScenario) !== scenarios.length && (
+            {parseInt(currentScenario) !== scenarios.length - 1 && (
               <button
                 onClick={endRound}
                 className="px-6 py-3 bg-purple-500 text-white font-bold rounded-lg shadow-md hover:bg-purple-600 focus:outline-none focus:ring-4 focus:ring-purple-300"
