@@ -103,17 +103,15 @@ const ModScenarios = () => {
         </button>
       </form>
       {scenariosSubmitted && (
-        <>
-          <p className={"text-white py-6 font-bold"}>{readyStateMessage}</p>
+        <div className="flex flex-col items-center py-6">
+          <p className="text-white py-6 font-bold">{readyStateMessage}</p>
           <button
             onClick={startGame}
-            className={
-              "text-3xl font-extrabold rounded-full shadow-lg px-3 py-2 bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 text-white"
-            }
+            className="text-3xl px-8 font-extrabold rounded-full shadow-lg px-6 py-3 bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 text-white"
           >
             Start Game
           </button>
-        </>
+        </div>
       )}
     </div>
   );
