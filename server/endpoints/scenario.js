@@ -23,7 +23,7 @@ const createScenarios = async (req, res, client, sockets) => {
     return;
   }
 
-  await client.lPush(scenariosKey, scenarios);
+  await client.rPush(scenariosKey, scenarios);
   await client.hSet(`sns:${gameId}`, { state: "song-selection" });
   const mod = await client.hGet(`sns:${gameId}`, "mod");
 

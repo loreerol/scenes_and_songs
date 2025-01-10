@@ -12,6 +12,7 @@ const PlayerJoin = ({ gameId }) => {
     onSuccess: ({ playerId }) => {
       setGameCookie({ gameId, isMod: false, playerId });
       queryClient.invalidateQueries(["players"]);
+      queryClient.invalidateQueries(["gameState"]);
     },
   });
 

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo } from "react";
+import React, { useContext, useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GameContext } from "../GameProvider";
 import { useVoteMutation } from "../hooks";
@@ -73,6 +73,12 @@ const VotingPhase = () => {
       return matchingTitle?.title || "Unknown Title";
     });
   }, [winningSongs, videoTitles]);
+
+  useEffect(() => {
+    if (votes?.[currentScenario]?.[playerId]) {
+      setSubmitted(Boolean(parseInt(votes[currentScenario][playerId])));
+    }
+  }, [votes?.[currentScenario]]);
 
   if (loading || typeof votes === "undefined")
     return <p className="text-center text-purple-500 font-bold">Loading...</p>;
