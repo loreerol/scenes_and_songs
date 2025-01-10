@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AudioPlayer from "./AudioPlayer";
 import ScenarioCard from "../GameSetup/ScenarioCard";
@@ -6,6 +6,21 @@ import ScenarioCard from "../GameSetup/ScenarioCard";
 import { GameContext } from "../GameProvider";
 import { queryClient } from "..";
 import Layout from "../Layout";
+
+// pulled from: https://www.geeksforgeeks.org/how-to-shuffle-an-array-using-javascript/
+const randomize = (array) =>
+  array.reduce(
+    (acc, _, i) => {
+      // Generate a random index
+      const random = Math.floor(Math.random() * (acc.length - i)) + i;
+
+      // Swap the element with random index element
+      [acc[i], acc[random]] = [acc[random], acc[i]];
+
+      return acc;
+    },
+    [...array] // Initialize accumulator as shoallow copy of given array
+  );
 
 const MusicPhase = () => {
   const navigate = useNavigate();
@@ -16,10 +31,22 @@ const MusicPhase = () => {
     currentScenario,
     scenarios,
     songs,
+    randomSongOrder,
+    setRandomSongOrder,
     sendMessage,
   } = useContext(GameContext);
 
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
+
+  useEffect(() => {
+    if (songs) {
+      const numScenarioSongs = Object.values(songs)
+        .map((songData) => songData?.[currentScenario]?.song)
+        .filter(Boolean).length;
+      const randomizedOrder = randomize([...Array(numScenarioSongs).keys()]);
+      setRandomSongOrder(randomizedOrder);
+    }
+  }, [songs, setRandomSongOrder, currentScenario]);
 
   const goToVoting = () => {
     sendMessage(JSON.stringify({ type: "startVoting", gameId }));
@@ -51,11 +78,14 @@ const MusicPhase = () => {
       {isMod ? (
         <>
           <div className="mb-4">
-            {scenarioSongs.length > 0 && scenarioSongs[currentSongIndex] ? (
+            {scenarioSongs.length > 0 &&
+            scenarioSongs[randomSongOrder[currentSongIndex]] ? (
               <AudioPlayer
-                videoUrl={scenarioSongs[currentSongIndex]}
+                videoUrl={scenarioSongs[randomSongOrder[currentSongIndex]]}
                 scenario={scenarios[currentScenario]}
-                songNumber={`Song ${currentSongIndex + 1} of ${scenarioSongs.length}`}
+                songNumber={`Song ${currentSongIndex + 1} of ${
+                  scenarioSongs.length
+                }`}
               />
             ) : (
               <p className="text-center text-red-500 font-bold">

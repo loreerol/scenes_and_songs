@@ -30,6 +30,8 @@ export const GameProvider = ({ children }) => {
   const [cookies, setCookie] = useCookies(["sns-game"]);
   const cookie = cookies["sns-game"];
 
+  const [randomSongOrder, setRandomSongOrder] = useState([]);
+
   const [player, setPlayer] = useState({
     playerId: cookie?.playerId || null,
     isMod: cookie?.isMod || false,
@@ -119,6 +121,8 @@ export const GameProvider = ({ children }) => {
         players,
         scenarios,
         songs,
+        randomSongOrder,
+        setRandomSongOrder,
         winningSongs,
         votes,
         guesses,
