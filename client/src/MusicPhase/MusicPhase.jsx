@@ -16,6 +16,7 @@ const MusicPhase = () => {
     currentScenario,
     scenarios,
     songs,
+    randomSongOrder,
     sendMessage,
   } = useContext(GameContext);
 
@@ -27,7 +28,11 @@ const MusicPhase = () => {
     navigate(`/game/${gameId}/vote`);
   };
 
-  if (loading || typeof currentScenario === "undefined")
+  if (
+    loading ||
+    typeof currentScenario === "undefined" ||
+    typeof randomSongOrder === "undefined"
+  )
     return <p>Loading...</p>;
 
   const scenarioSongs = Object.values(songs)
@@ -51,9 +56,16 @@ const MusicPhase = () => {
       {isMod ? (
         <>
           <div className="mb-4">
-            {scenarioSongs.length > 0 && scenarioSongs[currentSongIndex] ? (
+            {scenarioSongs.length > 0 &&
+            scenarioSongs[
+              randomSongOrder[currentScenario][currentSongIndex]
+            ] ? (
               <AudioPlayer
-                videoUrl={scenarioSongs[currentSongIndex]}
+                videoUrl={
+                  scenarioSongs[
+                    randomSongOrder[currentScenario][currentSongIndex]
+                  ]
+                }
                 scenario={scenarios[currentScenario]}
                 scenarioNumber={currentScenario}
                 songNumber={`Song ${currentSongIndex + 1} of ${
