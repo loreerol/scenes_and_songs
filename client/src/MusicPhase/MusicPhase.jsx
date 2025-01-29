@@ -28,7 +28,11 @@ const MusicPhase = () => {
     navigate(`/game/${gameId}/vote`);
   };
 
-  if (loading || typeof currentScenario === "undefined")
+  if (
+    loading ||
+    typeof currentScenario === "undefined" ||
+    typeof randomSongOrder === "undefined"
+  )
     return <p>Loading...</p>;
 
   const scenarioSongs = Object.values(songs)

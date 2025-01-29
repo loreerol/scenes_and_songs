@@ -81,7 +81,11 @@ const VotingPhase = () => {
     }
   }, [votes, currentScenario, playerId]);
 
-  if (loading || typeof votes === "undefined")
+  if (
+    loading ||
+    typeof votes === "undefined" ||
+    typeof randomSongOrder === "undefined"
+  )
     return <p className="text-center text-purple-500 font-bold">Loading...</p>;
 
   if (!currentScenario || !allSongs)
