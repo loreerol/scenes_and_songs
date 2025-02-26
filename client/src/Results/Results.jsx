@@ -3,7 +3,6 @@ import { GameContext } from "../GameProvider";
 import { useGameScores } from "../hooks";
 import { queryClient } from "..";
 import { useNavigate } from "react-router-dom";
-import Layout from "../Layout";
 
 const Results = () => {
   const navigate = useNavigate();
@@ -66,7 +65,6 @@ const Results = () => {
   };
 
   return (
-    <Layout>
       <div className="max-w-4xl mx-auto p-6 bg-white rounded-xl shadow-md border-4 border-purple-400">
         <h1 className="text-3xl font-extrabold text-purple-600 text-center mb-4">
           🏆 Results
@@ -128,7 +126,6 @@ const Results = () => {
           </div>
         )}
       </div>
-    </Layout>
   );
 };
 

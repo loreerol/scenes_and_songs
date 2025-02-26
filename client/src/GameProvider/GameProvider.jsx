@@ -13,6 +13,7 @@ import {
   useWinningSongs,
 } from "../hooks";
 import messageHandlers from "./messageHandlers";
+import Layout from "../Layout";
 
 const socketUrl = "ws://localhost:3001/ws/player";
 
@@ -126,7 +127,9 @@ export const GameProvider = ({ children }) => {
         sendMessage,
       }}
     >
+      <Layout>
       {children}
+      </Layout>
     </GameContext.Provider>
   );
 };
