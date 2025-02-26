@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { GameContext } from "../GameProvider";
 import { useGuessMutation } from "../hooks";
 import { queryClient } from "..";
-import Layout from "../Layout";
 import { useQuery } from "react-query";
 import { fetchVideoTitles } from "../hooks/youtube";
 
@@ -230,14 +229,12 @@ const GuessingPhase = () => {
   }
 
   return (
-    <Layout>
       <div className="relative border-4 border-purple-400 rounded-xl p-6 bg-white shadow-md text-gray-900">
         <h2 className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-2xl font-extrabold text-white bg-purple-400 rounded-full px-6 py-2 shadow-md">
           🎭 Guessing Phase
         </h2>
         {content}
       </div>
-    </Layout>
   );
 };
 

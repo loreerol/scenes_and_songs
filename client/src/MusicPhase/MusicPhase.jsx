@@ -5,7 +5,6 @@ import ScenarioCard from "../GameSetup/ScenarioCard";
 
 import { GameContext } from "../GameProvider";
 import { queryClient } from "..";
-import Layout from "../Layout";
 
 const MusicPhase = () => {
   const navigate = useNavigate();
@@ -47,7 +46,7 @@ const MusicPhase = () => {
   };
 
   return (
-    <Layout>
+    <>
       {isMod ? (
         <>
           <div className="mb-4">
@@ -99,7 +98,7 @@ const MusicPhase = () => {
           index={currentScenario}
         />
       )}
-    </Layout>
+    </>
   );
 };
 
