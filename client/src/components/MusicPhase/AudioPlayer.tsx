@@ -22,7 +22,6 @@ const AudioPlayer = ({
   scenarioNumber,
   songNumber,
 }: AudioPlayerProps) => {
-  console.log(scenario, "sss");
   const videoId = extractVideoId(videoUrl);
   const { data: videoTitle, error, isLoading } = useVideoTitle(videoId || "");
   const {

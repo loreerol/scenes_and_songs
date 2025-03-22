@@ -26,7 +26,6 @@ const ScenarioCard = ({
   edit = false,
   responseInput,
 }: ScenarioCardProps) => {
-  console.log(index, "index");
   return (
     <div
       className={`relative ${
