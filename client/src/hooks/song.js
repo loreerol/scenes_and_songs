@@ -30,9 +30,25 @@ export const useWinningSongs = (gameId, gameState) =>
     }
   );
 
+export const useRandomSongOrder = (gameId, gameState) =>
+  useQuery(
+    ["randomSongOrder"],
+    () =>
+      axios
+        .get(`games/${gameId}/songs/random`)
+        .then((res) => res.data.randomSongOrder),
+    {
+      enabled: Boolean(gameId) && Boolean(gameState) && gameState !== "lobby",
+      staleTime: 1000 * 60 * 60, // 1 hour
+    }
+  );
+
 export const useSongsMutation = (gameId, options) =>
   useMutation(
     ({ playerId, songs }) =>
       axios.post(`/games/${gameId}/songs`, { playerId, songs }),
     options
   );
+
+export const useRandomSongOrderMutation = (gameId, options) =>
+  useMutation(() => axios.post(`/games/${gameId}/songs/random`), options);

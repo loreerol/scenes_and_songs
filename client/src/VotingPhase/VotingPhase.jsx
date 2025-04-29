@@ -18,6 +18,7 @@ const VotingPhase = () => {
     players,
     scenarios,
     songs: allSongs,
+    randomSongOrder,
     votes,
     winningSongs,
     loading,
@@ -77,9 +78,13 @@ const VotingPhase = () => {
     if (votes?.[currentScenario]?.[playerId]) {
       setSubmitted(Boolean(parseInt(votes[currentScenario][playerId])));
     }
-  }, [votes?.[currentScenario]]);
+  }, [votes, currentScenario, playerId]);
 
-  if (loading || typeof votes === "undefined")
+  if (
+    loading ||
+    typeof votes === "undefined" ||
+    typeof randomSongOrder === "undefined"
+  )
     return <p className="text-center text-purple-500 font-bold">Loading...</p>;
 
   if (!currentScenario || !allSongs)
@@ -155,7 +160,8 @@ const VotingPhase = () => {
                     ) : isError ? (
                       <p className="text-red-500">Error loading titles</p>
                     ) : (
-                      scenarioSongs.map((song) => {
+                      randomSongOrder[currentScenario].map((i) => {
+                        const song = scenarioSongs[i];
                         const title =
                           videoTitles.find(
                             (item) => item.videoId === song.videoId
