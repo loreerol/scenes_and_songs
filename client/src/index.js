@@ -2,21 +2,28 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { CookiesProvider } from "react-cookie";
 
 import "./styles.css";
-import CreateGame from "./CreateGame/CreateGame";
+import CreateGame from "./components/GameCreation/CreateGame";
 import GameRedirect from "./GameRedirect";
-import GameSetup from "./GameSetup";
+import GameSetup from "./components/GameCreation/GameSetup";
 import { GameProvider } from "./GameProvider";
-import MusicPhase from "./MusicPhase";
-import VotingPhase from "./VotingPhase";
-import GuessingPhase from "./GuessingPhase";
-import Results from "./Results";
+import MusicPhase from "./components/MusicPhase";
+import VotingPhase from "./components/VotingPhase";
+import GuessingPhase from "./components/GuessingPhase";
+import Results from "./components/Results";
 
 export const queryClient = new QueryClient();
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error("Root element not found");
+}
+
+const root = ReactDOM.createRoot(rootElement);
 root.render(
   <QueryClientProvider client={queryClient}>
     <CookiesProvider defaultSetOptions={{ path: "/" }}>
@@ -34,5 +41,6 @@ root.render(
         </GameProvider>
       </BrowserRouter>
     </CookiesProvider>
-  </QueryClientProvider>
+    <ReactQueryDevtools initialIsOpen={false} />
+  </QueryClientProvider>,
 );

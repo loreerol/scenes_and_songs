@@ -28,7 +28,12 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 expressWs(app);
 app.use(express.static(path.resolve(__dirname, "../client/build")));
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: "GET,POST,PUT,DELETE,OPTIONS", 
+  })
+);
 
 var jsonParser = bodyParser.json();
 
@@ -58,7 +63,6 @@ app.ws("/ws/player", (ws, req) => {
     }
 
     for (const handler of [...gameHandlers, ...playerHandlers]) {
-      //asdf
       await handler(ws, req, msg, client, sockets);
     }
 

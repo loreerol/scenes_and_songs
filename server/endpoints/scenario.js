@@ -1,12 +1,11 @@
 const getScenarios = async (req, res, client) => {
   const gameId = req.params.gameId;
+
   const scenarios = await client.lRange(`sns:${gameId}:scenarios`, 0, -1);
 
   if (!scenarios.length) {
-    res
-      .status(404)
-      .json({ message: "There are no scenarios for this game yet" });
-    return;
+    console.warn(`No scenarios found for game ${gameId}, returning empty array.`);
+    return res.status(200).json({ scenarios: [] }); 
   }
 
   res.json({ scenarios });
