@@ -22,11 +22,11 @@ const ModScenarios = () => {
     scenariosData || Array(3).fill(""),
   );
   const [error, setError] = useState<string | null>();
-  const [songsSubmitted, setSongsSubmitted] = useState<boolean>(false);
+  const [scenariosSubmitted, setScenariosSubmitted] = useState<boolean>(false);
 
   useEffect(() => {
     if (gameState === "song-selection") {
-      setSongsSubmitted(true);
+      setScenariosSubmitted(true);
     }
   }, [gameState]);
 
@@ -88,7 +88,7 @@ const ModScenarios = () => {
         className="space-y-12 text-center"
       >
         <Scenarios
-          edit={!songsSubmitted}
+          edit={!scenariosSubmitted}
           scenarios={scenarios}
           setScenarios={setScenarios}
           setError={setError}
@@ -101,17 +101,17 @@ const ModScenarios = () => {
         )}
         <button
           type="submit"
-          disabled={songsSubmitted}
+          disabled={scenariosSubmitted}
           className={`text-3xl font-extrabold rounded-full shadow-lg px-3 py-2 ${
-            songsSubmitted
+            scenariosSubmitted
               ? "bg-green-500 text-white cursor-not-allowed"
               : "bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-400 text-white"
           }`}
         >
-          {songsSubmitted ? "✔ Submitted" : "Submit"}
+          {scenariosSubmitted ? "✔ Submitted" : "Submit"}
         </button>
       </form>
-      {songsSubmitted && (
+      {scenariosSubmitted && (
         <div className="flex flex-col items-center py-6">
           <p className="text-white py-6 font-bold">{readyStateMessage}</p>
           <button

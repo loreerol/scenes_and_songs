@@ -63,7 +63,6 @@ app.ws("/ws/player", (ws, req) => {
     }
 
     for (const handler of [...gameHandlers, ...playerHandlers]) {
-      //asdf
       await handler(ws, req, msg, client, sockets);
     }
 
