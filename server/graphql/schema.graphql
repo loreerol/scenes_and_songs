@@ -1,0 +1,9 @@
+  type YouTubeVideo {
+    id: String!
+    title: String!
+    thumbnail: String!
+  }
+    
+  type Query {
+    youtubeVideo(videoId: String!): YouTubeVideo
+  }
