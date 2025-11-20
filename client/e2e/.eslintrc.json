@@ -1,0 +1,18 @@
+{
+  "extends": ["plugin:playwright/recommended"],
+  "rules": {
+    "testing-library/prefer-screen-queries": "off",
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+        "@typescript-eslint/no-unused-vars": ["warn", { 
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_"
+        }]
+      }
+    }
+  ]
+}
