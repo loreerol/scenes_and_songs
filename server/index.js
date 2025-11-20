@@ -8,6 +8,7 @@ import expressWs from "express-ws";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { createClient } from "redis";
+import { graphqlHTTP } from "express-graphql";
 
 import playerHandlers from "./handlers/player.js";
 import gameHandlers from "./handlers/game.js";
@@ -19,6 +20,8 @@ import songEndpoints from "./endpoints/song.js";
 import voteEndpoints from "./endpoints/vote.js";
 import guessEndpoints from "./endpoints/guess.js";
 import youTubeEndpoints from "./endpoints/youtube.js";
+
+import { graphqlConfig } from "./graphql/config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,10 +44,11 @@ var jsonParser = bodyParser.json();
 const client = await createClient()
   .on("error", (err) => console.log("Redis Client Error", err))
   .connect();
-// TODO: await client.disconnect();
+
+// GraphQL endpoint ---------------------------------------------------------
+app.use('/graphql', graphqlHTTP(graphqlConfig));
 
 // Websockets ---------------------------------------------------------------
-// TODO: concurency clobering issues???
 const sockets = {};
 app.ws("/ws/player", (ws, req) => {
   ws.on("message", async (msg) => {
@@ -70,7 +74,7 @@ app.ws("/ws/player", (ws, req) => {
   });
 });
 
-// API ---------------------------------------------------------------------
+// REST API -----------------------------------------------------------------
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
@@ -93,7 +97,8 @@ voteEndpoints.forEach(registerEndpoint);
 guessEndpoints.forEach(registerEndpoint);
 youTubeEndpoints.forEach(registerEndpoint);
 
-// Serve the client ---------------------------------------------------------
+// Start server -------------------------------------------------------------
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
+  console.log(`GraphQL playground at http://localhost:${PORT}/graphql`);
 });
