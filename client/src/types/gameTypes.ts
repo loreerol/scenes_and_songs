@@ -52,6 +52,11 @@ export interface Scenario {
   gameId: string;
 }
 
+export interface VideoTitle {
+  videoId: string;
+  title: string;
+}
+
 interface BaseGameContext {
   gameId: string;
   playerId: string;

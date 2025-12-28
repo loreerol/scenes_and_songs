@@ -36,7 +36,7 @@ const ModScenarios = () => {
       if (res?.status === 400) setError(res.data.message);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["gameState", gameId]);
+      queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
     },
   });
 

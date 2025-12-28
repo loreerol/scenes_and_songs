@@ -96,12 +96,12 @@ const VotingPhase = () => {
 
   const closeVoting = () => {
     sendMessage(JSON.stringify({ type: "closeVoting", gameId }));
-    queryClient.invalidateQueries(["gameState", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
   };
 
   const goToGuessing = () => {
     sendMessage(JSON.stringify({ type: "startGuessing", gameId }));
-    queryClient.invalidateQueries(["gameState", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
     navigate(`/game/${gameId}/guess`);
   };
 

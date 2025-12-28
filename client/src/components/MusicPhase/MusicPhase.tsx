@@ -22,7 +22,7 @@ const MusicPhase = () => {
 
   const goToVoting = () => {
     sendMessage(JSON.stringify({ type: "startVoting", gameId }));
-    queryClient.invalidateQueries(["gameState", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
     navigate(`/game/${gameId}/vote`);
   };
 

@@ -11,8 +11,8 @@ const PlayerJoin = ({ gameId }) => {
   const { mutate: playerJoin } = usePlayerJoinMutation(gameId, {
     onSuccess: ({ playerId }) => {
       setGameCookie({ gameId, isMod: false, playerId });
-      queryClient.invalidateQueries(["players"]);
-      queryClient.invalidateQueries(["gameState", gameId]);
+      queryClient.invalidateQueries({ queryKey: ["players"] });
+      queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
     },
   });
 

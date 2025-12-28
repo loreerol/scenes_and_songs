@@ -65,7 +65,7 @@ const Results = () => {
     }
 
     sendMessage(JSON.stringify({ type: "endRound", gameId }));
-    queryClient.invalidateQueries(["gameState", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
     navigate(`/game/${gameId}/music`);
   };
 
