@@ -79,7 +79,7 @@ const MusicPhase = () => {
               {currentSongIndex + 1 < scenarioSongs.length && (
                 <button
                   onClick={handleNextSong}
-                  className="px-4 py-2 bg-blue-500 text-white over:ring-2 hover:ring-purple-500 justify-self-end rounded hover:bg-blue-600"
+                  className="px-4 py-2 bg-blue-500 text-white hover:ring-2 hover:ring-purple-500 justify-self-end rounded hover:bg-blue-600"
                 >
                   Next Song
                 </button>
