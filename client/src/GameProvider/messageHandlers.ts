@@ -1,4 +1,4 @@
-import { queryClient } from "..";
+import { queryClient } from "../config/queryClient";
 
 const messageHandlers = {
   playerJoined: () => {

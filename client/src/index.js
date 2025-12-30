@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { CookiesProvider } from "react-cookie";
 
@@ -16,8 +16,7 @@ import GuessingPhase from "./components/GuessingPhase";
 import Results from "./components/Results";
 import AppErrorBoundary from "./components/ErrorBoundary/AppErrorBoundary";
 import RouteErrorBoundary from "./components/ErrorBoundary/RouteErrorBoundary";
-
-export const queryClient = new QueryClient();
+import { queryClient } from "./config/queryClient";
 
 const rootElement = document.getElementById("root");
 

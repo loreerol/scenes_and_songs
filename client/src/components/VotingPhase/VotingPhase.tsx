@@ -1,8 +1,8 @@
 import React, { useContext, useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { GameContext } from "../../GameProvider";
 import { useVoteMutation, useVideoTitles } from "../../hooks"; // Ensure useVideoTitles hook is used
-import { queryClient } from "../..";
 import { GameStateMapping } from "../../types/gameTypes";
 
 interface Song {
@@ -13,6 +13,7 @@ interface Song {
 
 const VotingPhase = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     gameId,
     gameState,
