@@ -29,7 +29,6 @@ class AppErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // Log error with context for observability
     console.error("App-level error boundary caught an error:", {
       domain: "app-root",
       error: error.message,
@@ -39,11 +38,6 @@ class AppErrorBoundary extends Component<Props, State> {
     });
 
     // TODO: Send to observability service (Sentry, LogRocket, etc.)
-    // Example:
-    // Sentry.captureException(error, {
-    //   tags: { domain: "app-root" },
-    //   extra: { componentStack: errorInfo.componentStack },
-    // });
 
     this.setState({
       error,

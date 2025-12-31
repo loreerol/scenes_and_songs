@@ -12,15 +12,6 @@ interface AudioPlayerProps {
   songNumber: string;
 }
 
-/**
- * AudioPlayer with comprehensive error handling
- *
- * Handles expected failures gracefully instead of crashing:
- * - Invalid video URLs
- * - Video not found
- * - YouTube player errors
- * - Network failures
- */
 const AudioPlayer = ({
   videoUrl,
   scenario,
@@ -44,10 +35,6 @@ const AudioPlayer = ({
     onReady,
   } = useYouTubePlayer(videoId);
 
-  /**
-   * Handle YouTube player errors
-   * Error codes: https://developers.google.com/youtube/iframe_api_reference#onError
-   */
   const handlePlayerError = (event: { data: number }) => {
     const errorCode = event.data;
     let errorMsg = "Video player error";
@@ -72,7 +59,6 @@ const AudioPlayer = ({
 
     setPlayerError(errorMsg);
 
-    // Log for observability using shared utility
     logError("YouTube player error", {
       domain: "audio-player",
       context: "handlePlayerError",
@@ -101,7 +87,6 @@ const AudioPlayer = ({
     },
   };
 
-  // Check for invalid video ID upfront
   if (!videoId) {
     return (
       <div className="relative border-4 border-red-400 rounded-xl p-6 bg-red-50 shadow-md">
@@ -124,7 +109,6 @@ const AudioPlayer = ({
     );
   }
 
-  // Show player error if it occurred
   if (playerError) {
     return (
       <div className="relative border-4 border-yellow-400 rounded-xl p-6 bg-yellow-50 shadow-md">
@@ -169,13 +153,12 @@ const AudioPlayer = ({
         {`🎵 Scenario ${scenarioNumber + 1}`}
       </h2>
       <h2 className="w-full font-extrabold text-3xl p-4 pt-10 text-center text-purple-900">
-        {scenario.text}
+        {scenario}
       </h2>
       <h2 className="font-extrabold text-1xl pt-3 text-purple-900 bg-white">
         {songNumber}
       </h2>
 
-      {/* Video title - with graceful degradation if fetch fails */}
       {isLoading && <p className="text-gray-500 italic">Loading video title...</p>}
 
       {titleErrorMessage && (
@@ -190,7 +173,6 @@ const AudioPlayer = ({
         {!isLoading && !titleError && videoTitle ? videoTitle.title : videoUrl}
       </h3>
 
-      {/* YouTube player with error handling */}
       <YouTube
         videoId={videoId || ""}
         opts={opts}

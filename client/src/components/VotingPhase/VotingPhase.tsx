@@ -45,23 +45,15 @@ const VotingPhase = () => {
     },
   });
 
-  /**
-   * Extract songs for current scenario with defensive error handling
-   *
-   * Best Practice: Use useMemo with defensive checks to prevent crashes
-   * and log warnings when data is unexpectedly missing
-   */
+
   const scenarioSongs: Song[] = useMemo(() => {
-    // Defensive: Handle missing data gracefully without logging (expected during load)
     if (!allSongs) return [];
     if (currentScenario === undefined || currentScenario === null) return [];
 
-    // Map songs with defensive checks
     const songs = Object.entries(allSongs).map(([playerId, playerSongs]) => {
       const songData = playerSongs[currentScenario];
       const songUrl = songData?.song;
 
-      // Defensive: Extract video ID safely
       const videoId = extractVideoId(songUrl, {
         domain: "voting-phase",
         context: `scenarioSongs-player-${playerId}`,
@@ -83,13 +75,7 @@ const VotingPhase = () => {
     isError,
   } = useVideoTitles(scenarioSongs);
 
-  /**
-   * Extract winning song titles with defensive error handling
-   *
-   * Best Practice: Handle missing/malformed data gracefully and log for debugging
-   */
   const winningSongTitles = useMemo(() => {
-    // Defensive: Handle missing data gracefully (expected during various game states)
     if (!winningSongs || !videoTitles) return [];
 
     return winningSongs.map((songUrl) => {
