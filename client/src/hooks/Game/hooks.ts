@@ -20,4 +20,4 @@ export const useGameScore = (gameId: string) =>
   });
 
 export const useCreateGameMutation = (options?: any) =>
-  useMutation({ mutationFn: createGame, ...options });
+  useMutation({ mutationKey: "createGame", mutationFn: createGame, ...options });

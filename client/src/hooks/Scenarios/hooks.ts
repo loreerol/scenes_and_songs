@@ -14,6 +14,7 @@ export const useFetchScenarios = (gameId: string, gameState: string) => {
 
 export const useScenariosMutation = (gameId: string, options?: any) =>
   useMutation<void, unknown, ScenarioPayload>({
+    mutationKey: "updateScenarios",
     mutationFn: (payload: ScenarioPayload) => updateScenarios(gameId, payload),
     ...options,
   });

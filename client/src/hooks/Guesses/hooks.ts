@@ -13,6 +13,7 @@ export const useGuesses = (gameId: string, gameState: string) =>
 
 export const useGuessMutation = (gameId: string, options?: any) =>
   useMutation({
+    mutationKey: "submitGuess",
     mutationFn: (guessData: { playerId: string; song: string; guess: string }) =>
       submitGuess(gameId, guessData),
     ...options,
