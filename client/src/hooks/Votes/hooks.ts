@@ -13,6 +13,7 @@ export const useVotes = (gameId: string, gameState: string) =>
 
 export const useVoteMutation = (gameId: string, options?: any) =>
   useMutation({
+    mutationKey: "submitVote",
     mutationFn: ({
       playerId,
       scenario,

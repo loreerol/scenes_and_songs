@@ -280,3 +280,9 @@ export const EXAMPLE_SONGS = [
   'https://www.youtube.com/watch?v=3JZ_D3ELwOQ',
   'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
 ];
+
+export const EXAMPLE_SONGS_2 = [
+  'https://www.youtube.com/watch?v=9bZkp7q19f0',
+  'https://www.youtube.com/watch?v=fJ9rUzIMcZQ',
+  'https://www.youtube.com/watch?v=60ItHLz5WEA',
+];

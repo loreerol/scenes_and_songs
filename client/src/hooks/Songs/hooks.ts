@@ -26,6 +26,7 @@ export const useWinningSongs = (gameId: string, gameState: string) =>
 
 export const useSongsMutation = (gameId: string, options?: any) =>
   useMutation({
+    mutationKey: "submitSongs",
     mutationFn: ({ playerId, songs }: { playerId: string; songs: SongEntry[] }) =>
       submitSongs(gameId, playerId, songs),
     ...options,

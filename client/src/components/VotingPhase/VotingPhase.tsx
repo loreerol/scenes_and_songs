@@ -1,9 +1,10 @@
 import React, { useContext, useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { GameContext } from "../../GameProvider";
-import { useVoteMutation, useVideoTitles } from "../../hooks"; // Ensure useVideoTitles hook is used
-import { queryClient } from "../..";
+import { useVoteMutation, useVideoTitles } from "../../hooks";
 import { GameStateMapping } from "../../types/gameTypes";
+import { extractVideoId } from "../../utils/youtube";
 
 interface Song {
   playerId: string;
@@ -13,6 +14,7 @@ interface Song {
 
 const VotingPhase = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     gameId,
     gameState,
@@ -43,18 +45,29 @@ const VotingPhase = () => {
     },
   });
 
-  const scenarioSongs: Song[] = useMemo(
-    () =>
-      allSongs
-        ? Object.entries(allSongs).map(([playerId, songs]) => ({
-            playerId,
-            song: songs[currentScenario]?.song || "",
-            videoId:
-              songs[currentScenario]?.song.split("v=")[1]?.split("&")[0] || "",
-          }))
-        : [],
-    [allSongs, currentScenario],
-  );
+
+  const scenarioSongs: Song[] = useMemo(() => {
+    if (!allSongs) return [];
+    if (currentScenario === undefined || currentScenario === null) return [];
+
+    const songs = Object.entries(allSongs).map(([playerId, playerSongs]) => {
+      const songData = playerSongs[currentScenario];
+      const songUrl = songData?.song;
+
+      const videoId = extractVideoId(songUrl, {
+        domain: "voting-phase",
+        context: `scenarioSongs-player-${playerId}`,
+      });
+
+      return {
+        playerId,
+        song: songUrl || "",
+        videoId,
+      };
+    });
+
+    return songs;
+  }, [allSongs, currentScenario]);
 
   const {
     data: videoTitles,
@@ -64,11 +77,16 @@ const VotingPhase = () => {
 
   const winningSongTitles = useMemo(() => {
     if (!winningSongs || !videoTitles) return [];
+
     return winningSongs.map((songUrl) => {
-      const videoId = songUrl.split("v=")[1]?.split("&")[0];
-      const matchingTitle = videoTitles.find(
-        (item) => item.videoId === videoId,
-      );
+      const videoId = extractVideoId(songUrl, {
+        domain: "voting-phase",
+        context: "winningSongTitles",
+      });
+
+      if (!videoId) return "Unknown Title";
+
+      const matchingTitle = videoTitles.find((item) => item.videoId === videoId);
       return matchingTitle?.title || "Unknown Title";
     });
   }, [winningSongs, videoTitles]);
@@ -116,7 +134,7 @@ const VotingPhase = () => {
       return isMod ? (
         <>
           <p className="text-lg font-extrabold text-purple-900">
-            Scenario: "{scenarios[currentScenario].text}"
+            Scenario: "{scenarios[currentScenario]}"
           </p>
           <p className="text-lg text-gray-700 mt-4">
             Waiting for players to vote.
@@ -132,7 +150,7 @@ const VotingPhase = () => {
       ) : (
         <>
           <p className="text-lg font-extrabold text-purple-900">
-            Scenario: "{scenarios[currentScenario].text}"
+            Scenario: "{scenarios[currentScenario]}"
           </p>
           {submitted ? (
             <p className="text-lg font-extrabold text-green-600 mt-4">

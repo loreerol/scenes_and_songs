@@ -1,14 +1,15 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import AudioPlayer from "./AudioPlayer";
 import ScenarioCard from "../common/ScenarioCard";
 
 import { GameContext } from "../../GameProvider";
-import { queryClient } from "../..";
 import { GameStateMapping } from "../../types/gameTypes";
 
 const MusicPhase = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     gameId,
     isMod,

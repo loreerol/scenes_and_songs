@@ -1,70 +1,85 @@
-# Getting Started with Create React App
+# Scenes & Songs - Client
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A multiplayer music trivia game where players submit YouTube songs for scenarios, vote on the best matches, and guess who submitted the winning songs.
+
+## Prerequisites
+
+- Node.js (v16 or higher)
+- yarn or npm
+- YouTube Data API v3 key (see setup below)
+
+## Installation
+
+```bash
+# Install dependencies
+yarn install
+# or
+npm install
+```
+
+## YouTube API Setup
+
+The app uses the YouTube Data API to fetch video titles.
+
+### 1. Get a YouTube API Key
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project (or select existing)
+3. Enable the **YouTube Data API v3**
+4. Go to **Credentials** → **Create Credentials** → **API Key**
+5. Copy your API key
+
+### 2. Configure the API Key
+
+Create a `.env` file in the `client` folder:
+
+```bash
+REACT_APP_YOUTUBE_API_KEY=your_api_key_here
+```
+
+**Note:** The API key is rate-limited. If you see "Unknown Title" instead of video names, you may have hit the quota.
+
+## Running the App
+
+```bash
+# Development mode
+yarn start
+# or
+npm start
+```
+
+Opens at [http://localhost:3000](http://localhost:3000)
+
+**Important:** The backend server must be running on `localhost:3001` for the app to work.
 
 ## Available Scripts
 
-In the project directory, you can run:
+### `yarn start`
+Runs the app in development mode with hot reload.
 
-### `npm start`
+### `yarn build`
+Builds the app for production to the `build` folder.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### `yarn test`
+Runs the test suite.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Tech Stack
 
-### `npm test`
+- React 18
+- TypeScript
+- React Query (TanStack Query)
+- React Router v6
+- WebSocket (react-use-websocket)
+- Tailwind CSS
+- YouTube iframe API
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Troubleshooting
 
-### `npm run build`
+**Problem:** "Unknown Title" shown for videos
+**Solution:** Check your YouTube API key in `.env` and verify you haven't exceeded quota
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**Problem:** Can't connect to game
+**Solution:** Ensure backend server is running on `localhost:3001`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Problem:** Real-time updates not working
+**Solution:** Check WebSocket connection - backend must support WebSocket on port 3001

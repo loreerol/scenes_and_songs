@@ -13,6 +13,7 @@ export const useFetchPlayers = (gameId: string) =>
 
 export const usePlayerJoinMutation = (gameId: string, options?: any) =>
   useMutation<void, unknown, PlayerCreationPayload>({
+    mutationKey: "createPlayer",
     mutationFn: (payload: PlayerCreationPayload) => createPlayer(gameId, payload),
     ...options,
   });
