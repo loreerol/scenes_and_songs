@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import YouTube from "react-youtube";
 import { useVideoTitle } from "../../hooks";
-import { Scenario } from "../../types/gameTypes";
 import useYouTubePlayer from "./utils";
 import { extractVideoId } from "../../utils/youtube";
 import { logError } from "../../utils/observability";
 
 interface AudioPlayerProps {
   videoUrl: string;
-  scenario: Scenario;
+  scenario: string;
   scenarioNumber: string;
   songNumber: string;
 }
@@ -110,7 +109,7 @@ const AudioPlayer = ({
           {`⚠️ Scenario ${scenarioNumber + 1}`}
         </h2>
         <h2 className="w-full font-extrabold text-3xl p-4 pt-10 text-center text-purple-900">
-          {scenario.text}
+          {scenario}
         </h2>
         <h2 className="font-extrabold text-1xl pt-3 text-purple-900">
           {songNumber}
@@ -133,7 +132,7 @@ const AudioPlayer = ({
           {`⚠️ Scenario ${scenarioNumber + 1}`}
         </h2>
         <h2 className="w-full font-extrabold text-3xl p-4 pt-10 text-center text-purple-900">
-          {scenario.text}
+          {scenario}
         </h2>
         <h2 className="font-extrabold text-1xl pt-3 text-purple-900">
           {songNumber}

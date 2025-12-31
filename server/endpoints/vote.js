@@ -36,7 +36,18 @@ const submitVote = async (req, res, client, sockets) => {
     songs.push({ playerId, song: s[0] });
   }
 
-  const playerVotedFor = songs.find((s) => s.song === song).playerId;
+  const matchedSong = songs.find((s) => s.song === song);
+  if (!matchedSong) {
+    console.error(`Vote failed - song not found. Song voted for: "${song}". Available songs:`, songs);
+    res.status(400).json({
+      message: "Invalid song selection",
+      votedFor: song,
+      availableSongs: songs
+    });
+    return;
+  }
+
+  const playerVotedFor = matchedSong.playerId;
 
   // TODO concurency issues continued?????
   await client.hIncrBy(

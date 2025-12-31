@@ -148,7 +148,7 @@ const VotingPhase = () => {
       return isMod ? (
         <>
           <p className="text-lg font-extrabold text-purple-900">
-            Scenario: "{scenarios[currentScenario].text}"
+            Scenario: "{scenarios[currentScenario]}"
           </p>
           <p className="text-lg text-gray-700 mt-4">
             Waiting for players to vote.
@@ -164,7 +164,7 @@ const VotingPhase = () => {
       ) : (
         <>
           <p className="text-lg font-extrabold text-purple-900">
-            Scenario: "{scenarios[currentScenario].text}"
+            Scenario: "{scenarios[currentScenario]}"
           </p>
           {submitted ? (
             <p className="text-lg font-extrabold text-green-600 mt-4">
