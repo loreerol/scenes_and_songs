@@ -85,8 +85,12 @@ jobs:
             exit 1
           fi
 
-          # Just check if the port is open (server is listening)
-          wait-on tcp:3001 --timeout 60000 || (
+          # Test connection manually
+          echo "Testing backend connection..."
+          timeout 5 bash -c 'cat < /dev/null > /dev/tcp/localhost/3001' && echo "✓ Backend port is open" || echo "✗ Cannot connect to backend"
+
+          # Use wait-on with verbose output
+          wait-on -v tcp:3001 --timeout 60000 || (
             echo "Backend failed to respond! Full server logs:"
             cat server/server.log
             echo ""
