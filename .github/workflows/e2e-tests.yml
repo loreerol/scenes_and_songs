@@ -1,0 +1,117 @@
+name: E2E Tests
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch: 
+
+jobs:
+  playwright-tests:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'yarn'
+          cache-dependency-path: |
+            client/yarn.lock
+            server/package-lock.json
+
+      - name: Install server dependencies
+        run: |
+          cd server
+          npm ci
+
+      - name: Install client dependencies
+        run: |
+          cd client
+          yarn install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: |
+          cd client
+          npx playwright install --with-deps chromium
+
+      - name: Install wait-on utility
+        run: npm install -g wait-on
+
+      - name: Start backend server
+        run: |
+          cd server
+          npm start &
+        env:
+          NODE_ENV: test
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+
+      - name: Start frontend dev server
+        run: |
+          cd client
+          yarn start &
+        env:
+          REACT_APP_YOUTUBE_API_KEY: ${{ secrets.REACT_APP_YOUTUBE_API_KEY }}
+          CI: false
+
+      - name: Wait for servers to be ready
+        run: |
+          echo "Waiting for backend server..."
+          wait-on http://localhost:3001 --timeout 60000
+          echo "Backend ready!"
+
+          echo "Waiting for frontend server..."
+          wait-on http://localhost:3000 --timeout 120000
+          echo "Frontend ready!"
+
+      - name: Run Playwright tests
+        run: |
+          cd client
+          yarn test:e2e
+        env:
+          REACT_APP_YOUTUBE_API_KEY: ${{ secrets.REACT_APP_YOUTUBE_API_KEY }}
+
+      - name: Upload test artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            client/e2e/test-results/
+            client/playwright-report/
+          retention-days: 7
+
+      - name: Upload test video on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-videos
+          path: client/e2e/test-results/**/*.webm
+          retention-days: 7
+
+      - name: Comment test results on PR
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ E2E tests failed! Check the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details and download artifacts (screenshots/videos) to debug.'
+            })
