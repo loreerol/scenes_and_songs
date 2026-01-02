@@ -89,8 +89,8 @@ jobs:
           echo "Testing backend connection..."
           timeout 5 bash -c 'cat < /dev/null > /dev/tcp/localhost/3001' && echo "✓ Backend port is open" || echo "✗ Cannot connect to backend"
 
-          # Use wait-on with verbose output
-          wait-on -v tcp:3001 --timeout 60000 || (
+          # Use IPv4 address explicitly to avoid IPv6 issues
+          wait-on tcp:127.0.0.1:3001 --timeout 60000 || (
             echo "Backend failed to respond! Full server logs:"
             cat server/server.log
             echo ""
@@ -111,7 +111,7 @@ jobs:
           curl -v http://localhost:3000 || echo "Curl to localhost failed"
           curl -v http://127.0.0.1:3000 || echo "Curl to 127.0.0.1 failed"
 
-          wait-on tcp:3000 --timeout 120000 || (
+          wait-on tcp:127.0.0.1:3000 --timeout 120000 || (
             echo "Frontend failed to start! Client logs:"
             tail -100 client/client.log
             echo ""
