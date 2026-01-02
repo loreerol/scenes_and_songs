@@ -67,10 +67,12 @@ jobs:
       - name: Start frontend dev server
         run: |
           cd client
-          yarn start &
+          yarn start > client.log 2>&1 &
+          echo $! > client.pid
         env:
           REACT_APP_YOUTUBE_API_KEY: ${{ secrets.REACT_APP_YOUTUBE_API_KEY }}
           CI: false
+          BROWSER: none
 
       - name: Wait for servers to be ready
         run: |
@@ -98,7 +100,14 @@ jobs:
           echo "Backend ready!"
 
           echo "Waiting for frontend server..."
-          wait-on http://localhost:3000 --timeout 120000
+          wait-on http://localhost:3000 --timeout 120000 || (
+            echo "Frontend failed to start! Client logs:"
+            tail -100 client/client.log
+            echo ""
+            echo "Frontend process status:"
+            ps aux | grep "yarn start" || echo "Process not found"
+            exit 1
+          )
           echo "Frontend ready!"
 
       - name: Run Playwright tests
