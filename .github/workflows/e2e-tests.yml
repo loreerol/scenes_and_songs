@@ -100,12 +100,22 @@ jobs:
           echo "Backend ready!"
 
           echo "Waiting for frontend server..."
-          wait-on http://localhost:3000 --timeout 120000 || (
+
+          # Test with curl first
+          sleep 5
+          echo "Testing frontend with curl..."
+          curl -v http://localhost:3000 || echo "Curl to localhost failed"
+          curl -v http://127.0.0.1:3000 || echo "Curl to 127.0.0.1 failed"
+
+          wait-on tcp:3000 --timeout 120000 || (
             echo "Frontend failed to start! Client logs:"
             tail -100 client/client.log
             echo ""
             echo "Frontend process status:"
             ps aux | grep "yarn start" || echo "Process not found"
+            echo ""
+            echo "Network status:"
+            netstat -tlnp | grep 3000 || echo "Nothing on 3000"
             exit 1
           )
           echo "Frontend ready!"
