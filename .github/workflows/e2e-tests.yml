@@ -83,7 +83,7 @@ jobs:
             exit 1
           fi
 
-          # Try to connect to an actual API endpoint
+          # Check if HTTP server is responding
           wait-on http://localhost:3001/api/games --timeout 60000 || (
             echo "Backend failed to respond! Full server logs:"
             cat server/server.log
