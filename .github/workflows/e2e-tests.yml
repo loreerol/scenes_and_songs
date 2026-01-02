@@ -30,14 +30,12 @@ jobs:
         with:
           node-version: '18'
           cache: 'yarn'
-          cache-dependency-path: |
-            client/yarn.lock
-            server/package-lock.json
+          cache-dependency-path: client/yarn.lock
 
       - name: Install server dependencies
         run: |
           cd server
-          npm ci
+          npm install
 
       - name: Install client dependencies
         run: |
