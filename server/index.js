@@ -94,6 +94,6 @@ guessEndpoints.forEach(registerEndpoint);
 youTubeEndpoints.forEach(registerEndpoint);
 
 // Serve the client ---------------------------------------------------------
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server listening on ${PORT}`);
 });
