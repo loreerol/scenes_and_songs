@@ -83,13 +83,8 @@ jobs:
             exit 1
           fi
 
-          # Try direct curl first to see what we get
-          echo "Testing with curl..."
-          curl -v http://localhost:3001/api/games || echo "Curl failed"
-          curl -v http://127.0.0.1:3001/api/games || echo "Curl failed on IP"
-
-          # Check if HTTP server is responding
-          wait-on http://localhost:3001/api/games --timeout 60000 || (
+          # Just check if the port is open (server is listening)
+          wait-on tcp:3001 --timeout 60000 || (
             echo "Backend failed to respond! Full server logs:"
             cat server/server.log
             echo ""
