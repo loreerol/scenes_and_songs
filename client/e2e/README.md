@@ -2,7 +2,7 @@
 
 This directory contains end-to-end tests for the Scenes and Songs game application.
 
-## Overview
+## Overview!
 
 The test suite includes comprehensive coverage of the complete game flow:
 1. **Game Creation** - Moderator creates a new game

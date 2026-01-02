@@ -30,14 +30,12 @@ jobs:
         with:
           node-version: '18'
           cache: 'yarn'
-          cache-dependency-path: |
-            client/yarn.lock
-            server/package-lock.json
+          cache-dependency-path: client/yarn.lock
 
       - name: Install server dependencies
         run: |
           cd server
-          npm ci
+          npm install
 
       - name: Install client dependencies
         run: |
@@ -55,7 +53,7 @@ jobs:
       - name: Start backend server
         run: |
           cd server
-          npm start &
+          npm start > server.log 2>&1 &
         env:
           NODE_ENV: test
           REDIS_HOST: localhost
@@ -64,20 +62,28 @@ jobs:
       - name: Start frontend dev server
         run: |
           cd client
-          yarn start &
+          yarn start > client.log 2>&1 &
         env:
           REACT_APP_YOUTUBE_API_KEY: ${{ secrets.REACT_APP_YOUTUBE_API_KEY }}
           CI: false
+          BROWSER: none
 
       - name: Wait for servers to be ready
         run: |
-          echo "Waiting for backend server..."
-          wait-on http://localhost:3001 --timeout 60000
-          echo "Backend ready!"
+          # Wait for backend (using IPv4 to avoid IPv6 resolution issues)
+          wait-on tcp:127.0.0.1:3001 --timeout 60000 || (
+            echo "Backend failed to start. Server logs:"
+            cat server/server.log
+            exit 1
+          )
 
-          echo "Waiting for frontend server..."
-          wait-on http://localhost:3000 --timeout 120000
-          echo "Frontend ready!"
+          # Wait for frontend (using IPv4 to avoid IPv6 resolution issues)
+          wait-on tcp:127.0.0.1:3000 --timeout 120000 || (
+            echo "Frontend failed to start. Client logs:"
+            tail -100 client/client.log
+            exit 1
+          )
+          echo "Both servers ready!"
 
       - name: Run Playwright tests
         run: |
@@ -90,17 +96,9 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: test-artifacts
           path: |
             client/e2e/test-results/
             client/playwright-report/
-          retention-days: 7
-
-      - name: Upload test video on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-videos
-          path: client/e2e/test-results/**/*.webm
           retention-days: 7
 
