@@ -1,14 +1,15 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import AudioPlayer from "./AudioPlayer";
 import ScenarioCard from "../common/ScenarioCard";
 
 import { GameContext } from "../../GameProvider";
-import { queryClient } from "../..";
 import { GameStateMapping } from "../../types/gameTypes";
 
 const MusicPhase = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     gameId,
     isMod,
@@ -22,7 +23,7 @@ const MusicPhase = () => {
 
   const goToVoting = () => {
     sendMessage(JSON.stringify({ type: "startVoting", gameId }));
-    queryClient.invalidateQueries(["gameState", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
     navigate(`/game/${gameId}/vote`);
   };
 
@@ -79,7 +80,7 @@ const MusicPhase = () => {
               {currentSongIndex + 1 < scenarioSongs.length && (
                 <button
                   onClick={handleNextSong}
-                  className="px-4 py-2 bg-blue-500 text-white over:ring-2 hover:ring-purple-500 justify-self-end rounded hover:bg-blue-600"
+                  className="px-4 py-2 bg-blue-500 text-white hover:ring-2 hover:ring-purple-500 justify-self-end rounded hover:bg-blue-600"
                 >
                   Next Song
                 </button>

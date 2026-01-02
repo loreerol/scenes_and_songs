@@ -1,12 +1,13 @@
 import React, { useContext, useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { GameContext } from "../../GameProvider";
 import { useGuessMutation, useVideoTitles } from "../../hooks";
-import { queryClient } from "../../index";
 
 const GuessingPhase = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     gameId,
     playerId,
@@ -94,12 +95,12 @@ const GuessingPhase = () => {
 
   const closeGuessing = () => {
     sendMessage(JSON.stringify({ type: "closeGuessing", gameId }));
-    queryClient.invalidateQueries(["gameState", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
   };
 
   const showRoundResults = () => {
     sendMessage(JSON.stringify({ type: "showRoundResults", gameId }));
-    queryClient.invalidateQueries(["gameState", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
     navigate(`/game/${gameId}/results`);
   };
 

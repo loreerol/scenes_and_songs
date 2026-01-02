@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { useScenariosMutation } from "../../hooks";
 import { GameContext } from "../../GameProvider";
-import { queryClient } from "../../index";
 
 import Scenarios from "./Scenarios";
 
 const ModScenarios = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     gameId,
     gameState,
@@ -36,7 +37,7 @@ const ModScenarios = () => {
       if (res?.status === 400) setError(res.data.message);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["gameState", gameId]);
+      queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
     },
   });
 

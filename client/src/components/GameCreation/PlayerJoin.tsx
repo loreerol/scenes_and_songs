@@ -1,18 +1,19 @@
 import React, { useState, useContext } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { GameContext } from "../../GameProvider";
 import { usePlayerJoinMutation } from "../../hooks";
-import { queryClient } from "../..";
 
 const PlayerJoin = ({ gameId }) => {
   const { setGameCookie } = useContext(GameContext);
+  const queryClient = useQueryClient();
   const [name, setName] = useState("");
 
   const { mutate: playerJoin } = usePlayerJoinMutation(gameId, {
     onSuccess: ({ playerId }) => {
       setGameCookie({ gameId, isMod: false, playerId });
-      queryClient.invalidateQueries(["players"]);
-      queryClient.invalidateQueries(["gameState", gameId]);
+      queryClient.invalidateQueries({ queryKey: ["players"] });
+      queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
     },
   });
 

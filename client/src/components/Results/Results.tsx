@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { GameContext } from "../../GameProvider";
 import { useGameScore } from "../../hooks";
-import { queryClient } from "../..";
-import { useNavigate } from "react-router-dom";
 import { Player } from "../../types/gameTypes";
 
 const Results = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const {
     gameId,
     isMod,
@@ -65,7 +66,7 @@ const Results = () => {
     }
 
     sendMessage(JSON.stringify({ type: "endRound", gameId }));
-    queryClient.invalidateQueries(["gameState", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
     navigate(`/game/${gameId}/music`);
   };
 

@@ -1,44 +1,44 @@
-import { queryClient } from "..";
+import { queryClient } from "../config/queryClient";
 
 const messageHandlers = {
   playerJoined: () => {
-    queryClient.invalidateQueries(["players"]);
+    queryClient.invalidateQueries({ queryKey: ["players"] });
   },
   senariosCreated: ({ gameId }) => {
-    queryClient.invalidateQueries(["gameState", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
   },
   updateSongs: ({ gameId }) => {
-    queryClient.invalidateQueries(["songs", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["songs", gameId] });
   },
   gameStarted: ({ navigate, gameId }) => {
-    queryClient.invalidateQueries(["gameState", gameId]);
-    queryClient.invalidateQueries(["scenarios", gameId]);
-    queryClient.invalidateQueries(["songs", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
+    queryClient.invalidateQueries({ queryKey: ["scenarios", gameId] });
+    queryClient.invalidateQueries({ queryKey: ["songs", gameId] });
     navigate(`/game/${gameId}/music`);
   },
   votingStarted: ({ navigate, gameId }) => {
-    queryClient.invalidateQueries(["gameState", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
     navigate(`/game/${gameId}/vote`);
   },
   updateVotes: ({ gameId }) => {
-    queryClient.invalidateQueries(["votes", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["votes", gameId] });
   },
   showVoteWinners: (gameId) => {
-    queryClient.invalidateQueries(["gameState", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
   },
   startGuessing: ({ navigate, gameId }) => {
-    queryClient.invalidateQueries(["gameState", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
     navigate(`/game/${gameId}/guess`);
   },
   updateGuesses: ({ gameId }) => {
-    queryClient.invalidateQueries(["guesses", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["guesses", gameId] });
   },
   showRoundResults: ({ navigate, gameId }) => {
-    queryClient.invalidateQueries(["gameState", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
     navigate(`/game/${gameId}/results`);
   },
   startNextRound: ({ navigate, gameId }) => {
-    queryClient.invalidateQueries(["gameState", gameId]);
+    queryClient.invalidateQueries({ queryKey: ["gameState", gameId] });
     navigate(`/game/${gameId}/music`);
   },
 };
