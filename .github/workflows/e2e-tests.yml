@@ -75,7 +75,26 @@ jobs:
       - name: Wait for servers to be ready
         run: |
           echo "Waiting for backend server..."
-          wait-on http://localhost:3001 --timeout 60000 || (echo "Backend failed to start! Server logs:"; cat server/server.log; exit 1)
+
+          # Check if server process is still running
+          if ! kill -0 $(cat server/server.pid) 2>/dev/null; then
+            echo "ERROR: Server process died! Logs:"
+            cat server/server.log
+            exit 1
+          fi
+
+          # Try to connect to an actual API endpoint
+          wait-on http://localhost:3001/api/games --timeout 60000 || (
+            echo "Backend failed to respond! Full server logs:"
+            cat server/server.log
+            echo ""
+            echo "Server process status:"
+            ps aux | grep "node index.js" || echo "Process not found"
+            echo ""
+            echo "Network connections:"
+            netstat -tlnp | grep 3001 || echo "Nothing listening on 3001"
+            exit 1
+          )
           echo "Backend ready!"
 
           echo "Waiting for frontend server..."
